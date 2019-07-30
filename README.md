@@ -1,1 +1,1 @@
-# 5C-RateMyP
+Chrome extension that allows users to easily see 5C professor ratings while constructing their schedule!
