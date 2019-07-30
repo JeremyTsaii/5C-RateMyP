@@ -10,16 +10,19 @@ link.type = 'text/css';
 link.href = 'main.css'; 
 head.appendChild(link); 
 
-//function to inject button next to add-course plus button
+//function to inject button at the top of information box
 function inject_cell(){
     var button = document.createElement('BUTTON');
     button.innerHTML = '5C RateMyP';
-    button.id = 'rmp-button'
+    button.id = 'rmp-button';
         
     var description_box = document.getElementById('course-description-box');
     description_box.prepend(document.createElement('hr'));
     description_box.prepend(button);
     console.log('button injected');
+
+    //open popup on button click 
+    document.getElementById('rmp-button').addEventListener('click', open_box);
 }
 
 //function for updating course_list and schedule_list
@@ -76,4 +79,9 @@ for (var i = 0; i < ex_list.length; i++) {
         })
 }
 
-//open popup on button click 
+//opens stat box
+function open_box() {
+    alert('this is working');
+    console.log('stat box opened');
+}
+
