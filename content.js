@@ -12,11 +12,23 @@ head.appendChild(link);
 
 //function to inject button at the top of information box
 function inject_cell(){
+    //button
     var button = document.createElement('BUTTON');
     button.innerHTML = '5C RateMyP';
     button.id = 'rmp-button';
-        
+
+    //popup container and text
+    var container = document.createElement('div');
+    container.className = "popup";
+    var stats = document.createElement('span');
+    stats.id = 'stats';
+    stats.innerText = 'Professor Ratings:';
+    stats.className = "popuptext";
+    container.appendChild(stats);
+
+    //injection        
     var description_box = document.getElementById('course-description-box');
+    description_box.prepend(container);
     description_box.prepend(document.createElement('hr'));
     description_box.prepend(button);
     console.log('button injected');
@@ -81,7 +93,8 @@ for (var i = 0; i < ex_list.length; i++) {
 
 //opens stat box
 function open_box() {
-    alert('this is working');
+    var stats = document.getElementById('stats');
+    stats.classList.toggle("show");
     console.log('stat box opened');
 }
 

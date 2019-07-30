@@ -16,6 +16,49 @@
 }
 
 /*rating box styling*/
-#rating-box {
-    border: none;
+/*container*/
+.popup {
+    position: relative;
+    display: inline-block;
 }
+
+/*actual popup*/
+.popup .popuptext {
+    visibility: hidden;
+    width: 300px;
+    height: 220px;
+    background-image: linear-gradient(rgba(0,0,0,.6), rgba(0,0,0,0.6));
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 4px 4px;
+    position: absolute;
+    z-index: 1;
+    top: -25px;
+    left: -150px;
+  }
+
+  /*arrow pointing to popup*/
+.popup .popuptext::before {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    border-width: 10px;
+    border-style: solid;
+    border-color: #706f6f transparent transparent transparent;
+    transform: rotate(180deg);
+  }
+  
+  /*toggle popup class when clicking on the button*/
+  .popup .show {
+    visibility: visible;
+    animation: fadeIn 1s;
+  }
+
+  /*animation for popup*/
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
+  }
+  
