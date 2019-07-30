@@ -35,6 +35,40 @@ function inject_cell(){
 
     //open popup on button click 
     document.getElementById('rmp-button').addEventListener('click', open_box);
+
+    //scrape information and display
+    setTimeout(scrape, 1000);
+    console.log('scraping information');
+}
+
+//function for scraping professor and class information
+function scrape() {
+    //get information from description box
+    var description_box = document.getElementById('course-description-box');
+    var rows = description_box.children.length;
+    var class_info = description_box.firstChild.nextSibling.nextSibling.nextSibling;
+    var campus = class_info.innerText.split(' ')[2].slice(0,2);
+    console.log(campus);
+    var prof_name = class_info.nextSibling.nextSibling.nextSibling.nextSibling;
+    //case with extra row (rows usually 12)
+    if (rows == 14) {
+        prof_name = prof_name.nextSibling.nextSibling;
+    }
+    console.log(class_info.innerText);
+    console.log(prof_name.innerText);
+
+    //format and display
+    var popup = document.getElementById('stats');
+    var names = prof_name.innerText.split('and').join(',').split(',');
+    //case with two professors
+    if (names.length == 4) {
+        popup.innerText = "Prof. " + names[1].trim() + ' ' + names[0].trim() + " and Prof. " + names[3].trim() + ' ' + names[2].trim() + ':';
+    }
+    //case with one professor
+    else if (names.length == 2) {
+        popup.innerText = "Prof. " + names[1].trim() + ' ' + names[0].trim() + ':';
+
+    }
 }
 
 //function for updating course_list and schedule_list
@@ -50,13 +84,13 @@ function update_lists(){
     plus_list = document.getElementsByClassName('course-box-button course-box-add-button icon ion-plus')
     for (var i = 0; i < plus_list.length; i++) {
         plus_list[i].addEventListener('click', function(){ 
-            setTimeout(update_lists, 2000);
+            setTimeout(update_lists, 1000);
         })
     }
     ex_list = document.getElementsByClassName('course-box-button course-box-remove-button icon ion-close');
     for (var i = 0; i < ex_list.length; i++) {
         ex_list[i].addEventListener('click', function(){ 
-            setTimeout(update_lists, 2000);
+            setTimeout(update_lists, 1000);
             })
     }
     console.log('lists updated');
@@ -75,19 +109,19 @@ for (var i = 0; i < schedule_list.length; i++){
 
 //create new schedule_list and course_list when user types in search box 
 document.getElementById('course-search-course-name-input').addEventListener('input', function(){ 
-    setTimeout(update_lists, 2000);
+    setTimeout(update_lists, 1000);
     });
 //update schedule_list, course_list, plus_list, and ex_list when user adds/removes course from schedule
 plus_list = document.getElementsByClassName('course-box-button course-box-add-button icon ion-plus')
 for (var i = 0; i < plus_list.length; i++) {
     plus_list[i].addEventListener('click', function(){ 
-        setTimeout(update_lists, 2000);
+        setTimeout(update_lists, 1000);
         })
 }
 ex_list = document.getElementsByClassName('course-box-button course-box-remove-button icon ion-close');
 for (var i = 0; i < ex_list.length; i++) {
     ex_list[i].addEventListener('click', function(){ 
-        setTimeout(update_lists, 2000);
+        setTimeout(update_lists, 1000);
         })
 }
 
