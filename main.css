@@ -1,0 +1,15 @@
+/*button styling*/
+#rmp-button {
+    border: 1px solid transparent;
+    color: white;
+    border-color: #d966ff;
+    background-color: #d966ff;
+    font-weight: 400;
+    cursor: pointer;
+    padding: 4px;
+}
+
+/*rating box styling*/
+#rating-box {
+    border: none;
+}
