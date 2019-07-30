@@ -7,6 +7,12 @@
     font-weight: 400;
     cursor: pointer;
     padding: 4px;
+    transition: all 1s;
+}
+
+#rmp-button:hover {
+    background-color: #1ddea1;
+    border-color:  #1ddea1;
 }
 
 /*rating box styling*/
