@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "Conveniently view ratings of 5C professors while crafting your schedule!",
     "author": "Jeremy T.",
-    "permissions": ["activeTab"],
+    "permissions": ["activeTab", "http://www.ratemyprofessors.com/*"],
     "background": {
         "persistent": false,
         "scripts": ["background.js"]
