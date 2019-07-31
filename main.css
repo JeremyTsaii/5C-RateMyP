@@ -18,7 +18,7 @@
 /*rating box styling*/
 /*container*/
 .popup {
-    position: relative;
+    position: absolute;
     display: inline-block;
 }
 
@@ -34,7 +34,7 @@
     padding: 4px 4px;
     position: absolute;
     z-index: 1;
-    top: -25px;
+    top: -10px;
     left: -150px;
   }
 

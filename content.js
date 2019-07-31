@@ -32,6 +32,10 @@ function inject_cell(){
     description_box.prepend(document.createElement('hr'));
     description_box.prepend(button);
     console.log('button injected');
+    
+    //in case of course description text overflow due to button injection
+    var description_container = document.getElementById('course-description-box-outer')
+    description_container.style.height = "auto";
 
     //open popup on button click 
     document.getElementById('rmp-button').addEventListener('click', open_box);
@@ -48,8 +52,8 @@ function scrape() {
     var rows = description_box.children.length;
     var class_info = description_box.firstChild.nextSibling.nextSibling.nextSibling;
     var campus = class_info.innerText.split(' ')[2].slice(0,2);
-    console.log(campus);
     var prof_name = class_info.nextSibling.nextSibling.nextSibling.nextSibling;
+
     //case with extra row (rows usually 12)
     if (rows == 14) {
         prof_name = prof_name.nextSibling.nextSibling;
