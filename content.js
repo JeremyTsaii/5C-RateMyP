@@ -238,6 +238,7 @@ function get_prof(page_url, user_url, prof1) {
                 tags = 'Top Tag: ' + tag_list[0].innerText;
             }
             
+            //append link to popup_link div
             var anchor = document.createElement('a');
             anchor.id = 'anchor_link';
             anchor.target = '_blank';
@@ -256,10 +257,78 @@ function get_prof(page_url, user_url, prof1) {
 
             //change popup backgrounds for graphic and link rows
             change_backgrounds();
+
+            //change the percent bar color according to inputted ratings
+            update_graphics(ratings[0].innerText.trim(), ratings[2].innerText.trim(), ratings[1].innerText.trim());
 		}
     }
     prof_request.open("GET", page_url, true);
     prof_request.send();
+}
+
+//change the percent bar color according to inputted ratings
+function update_graphics(overall, difficulty, again) {
+    var overall_bar = document.createElement('div');
+    var overall_percent = String(parseFloat(overall)/5 * 100) + '%';
+    overall_bar.id = 'overall_bar';
+    overall_bar.innerText = overall;
+    overall_bar.style.width = overall_percent;
+    color(overall_bar, 'normal');
+    document.getElementById('overall_graphic').appendChild(overall_bar);
+
+    var difficulty_bar = document.createElement('div');
+    var difficulty_percent = String(parseFloat(difficulty)/5 * 100) + '%';
+    difficulty_bar.id = 'difficulty_bar';
+    difficulty_bar.innerText = difficulty;
+    difficulty_bar.style.width = difficulty_percent;
+    color(difficulty_bar, 'inverse');
+    document.getElementById('difficulty_graphic').appendChild(difficulty_bar);
+
+    var again_bar = document.createElement('div');
+    var again_percent = again;
+    again_bar.id = 'again_bar';
+    //case where there is an actual percent 
+    if (again != 'N/A') {
+        again_bar.innerText = again;
+        again_bar.style.width = again;
+        color(again_bar, 'normal');
+    }
+    document.getElementById('again_graphic').appendChild(again_bar);
+    
+}
+
+//changes color of bar to green/yellow/orange/red according to the percentage
+//takes in second argument called type ('normal' if for overall or again, 'inverse' if for difficulty)
+function color(bar, type) {
+    var percent = Number(bar.style.width.substring(0, bar.style.width.length-1));
+    if (type == 'normal'){
+        if (percent>=80) {
+            bar.style.backgroundColor = '#1BFF70';
+        }
+        else if (percent>=60) {
+            bar.style.backgroundColor = '#DAFF1B';
+        }
+        else if (percent>=40) {
+            bar.style.backgroundColor = '#FF901B';
+        }
+        else {
+            bar.style.backgroundColor = '#FF1B1B'
+        }
+    }
+    else if (type == 'inverse') {
+        if (percent<=40) {
+            bar.style.backgroundColor = '#1BFF70';
+        }
+        else if (percent<=60){
+            bar.style.backgroundColor = '#DAFF1B';
+        }
+        else if (percent<=80) {
+            bar.style.backgroundColor = '#FF901B';
+        }
+        else {
+            bar.style.backgroundColor = '#FF1B1B';
+        }
+    }
 }
 
 //change popup backgrounds for graphic and link rows

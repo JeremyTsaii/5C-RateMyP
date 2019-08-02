@@ -32,7 +32,7 @@
     right: 40px;
   }
 
-  /*arrow pointing to container*/
+/*arrow pointing to container*/
 .popup::before {
     content: "";
     position: absolute;
@@ -43,7 +43,8 @@
     border-color: #706f6f transparent transparent transparent;
     transform: rotate(180deg);
   }
-  
+
+  /*specific formatting of rating divs*/
   #popup_title {
     width: 310px;
     height: 10%;
@@ -106,6 +107,34 @@
     width: 310px;
     height: 10%;
     top: 90%;
+  }
+
+  /*progres bar divs*/
+  #overall_bar {
+    color: grey;
+    text-align: right;
+    padding-top: 2px;
+    padding-bottom: 2px; 
+    padding-right: 2px;
+    height: 100%;
+  }
+
+  #difficulty_bar {
+    color: grey;
+    text-align: right;
+    padding-top: 2px;
+    padding-bottom: 2px; 
+    padding-right: 2px;
+    height: 100%;
+  }
+
+  #again_bar {
+    color: grey;
+    text-align: right;
+    padding-top: 2px;
+    padding-bottom: 2px; 
+    padding-right: 2px;
+    height: 100%;
   }
 
   /*general formatting of rating divs*/
