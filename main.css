@@ -18,28 +18,22 @@
 /*rating box styling*/
 /*container*/
 .popup {
-    position: absolute;
-    display: inline-block;
-}
-
-/*actual popup*/
-.popup .popuptext {
     visibility: hidden;
-    width: 300px;
-    height: 220px;
+    display: inline-block;
     background-image: linear-gradient(rgba(0,0,0,.6), rgba(0,0,0,0.6));
+    width: 320px;
+    height: 300px;
     color: #fff;
     text-align: center;
-    border-radius: 6px;
     padding: 4px 4px;
-    position: absolute;
     z-index: 1;
-    top: -10px;
-    left: -150px;
+    position: absolute;
+    top: 130px;
+    right: 40px;
   }
 
-  /*arrow pointing to popup*/
-.popup .popuptext::before {
+  /*arrow pointing to container*/
+.popup::before {
     content: "";
     position: absolute;
     bottom: 100%;
@@ -50,8 +44,83 @@
     transform: rotate(180deg);
   }
   
+  #popup_title {
+    width: 310px;
+    height: 10%;
+    top: 0%;
+  }
+
+  #popup_overall {
+    width: 310px;
+    height: 10%;
+    top: 10%;
+    text-align: left;
+  }
+
+  #overall_graphic {
+    width: 310px;
+    height: 10%;
+    top: 20%;
+  }
+
+  #popup_difficulty {
+    width: 310px;
+    height: 10%;
+    top: 30%;
+    text-align: left;
+  }
+
+  #difficulty_graphic {
+    width: 310px;
+    height: 10%;
+    top: 40%;
+  }
+
+  #popup_again {
+    width: 310px;
+    height: 10%;
+    top: 50%;
+    text-align: left;
+  }
+
+  #again_graphic {
+    width: 310px;
+    height: 10%;
+    top: 60%;
+  }
+
+  #popup_tags {
+    width: 310px;
+    height: 10%;
+    top: 70%;
+    text-align: left;
+  }
+
+  #popup_num {
+    width: 310px;
+    height: 10%;
+    top: 80%;
+  }
+
+  #popup_link {
+    width: 310px;
+    height: 10%;
+    top: 90%;
+  }
+
+  /*general formatting of rating divs*/
+  .popup_text {
+    position: absolute;
+    z-index: 1;
+  }
+
+  /*link color at bottom of box*/
+  #anchor_link {
+    color: #7CFFDC;
+  }
+
   /*toggle popup class when clicking on the button*/
-  .popup .show {
+  .show {
     visibility: visible;
     animation: fadeIn 1s;
   }

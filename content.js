@@ -27,7 +27,8 @@ function inject_cell(){
 
     //popup container and text
     var container = document.createElement('div');
-    container.className = "popup";
+    container.className = 'popup';
+    container.id = 'popup_box';
     create_popup(container);
     
     //injection        
@@ -41,31 +42,66 @@ function inject_cell(){
     var description_container = document.getElementById('course-description-box-outer')
     description_container.style.height = "auto";
 
+    //get information and display
+    setTimeout(get_description, 1000);
+    console.log('Getting information from description.');
+
     //open popup on button click 
     document.getElementById('rmp-button').addEventListener('click', open_box);
 }
 
 //creates the span elements in the popup box and appends to inputted container div
 function create_popup(container) {
-    var popup_title = document.createElement('span');
+    var popup_title = document.createElement('div');
     popup_title.id = 'popup_title';
     popup_title.className = 'popuptext';
     container.appendChild(popup_title);
 
-    var popup_overall = document.createElement('span');
+    var popup_overall = document.createElement('div');
     popup_overall.id = 'popup_overall';
     popup_overall.className = 'popuptext';
     container.appendChild(popup_overall);
 
-    var popup_difficulty = document.createElement('span');
+    var overall_graphic = document.createElement('div');
+    overall_graphic.id = 'overall_graphic';
+    overall_graphic.className = 'popuptext';
+    container.appendChild(overall_graphic);
+
+    var popup_difficulty = document.createElement('div');
     popup_difficulty.id = 'popup_difficulty';
     popup_difficulty.className = 'popuptext';
     container.appendChild(popup_difficulty);
 
-    var popup_num = document.createElement('span');
+    var difficulty_graphic = document.createElement('div');
+    difficulty_graphic.id = 'difficulty_graphic';
+    difficulty_graphic.className = 'popuptext';
+    container.appendChild(difficulty_graphic);
+
+    var popup_again = document.createElement('div');
+    popup_again.id = 'popup_again';
+    popup_again.className = 'popuptext';
+    container.appendChild(popup_again);
+
+    var again_graphic = document.createElement('div');
+    again_graphic.id = 'again_graphic';
+    again_graphic.className = 'popuptext';
+    container.appendChild(again_graphic);
+
+    var popup_tags = document.createElement('div');
+    popup_tags.id = 'popup_tags';
+    popup_tags.className = 'popuptext';
+    container.appendChild(popup_tags);
+
+    var popup_num = document.createElement('div');
     popup_num.id = 'popup_num';
     popup_num.className = 'popuptext';
     container.appendChild(popup_num);
+
+    var popup_link = document.createElement('div');
+    popup_link.id = 'popup_link';
+    popup_link.className = 'popuptext';
+    container.appendChild(popup_link);
+
 
 }
 
@@ -82,7 +118,8 @@ function get_description() {
 
     //if PE class, do not get information from RMP
     if (course_code == 'PE') {
-        document.getElementById('popup_title').innerText = 'This is a P.E. class! No results from RMP.';
+        document.getElementById('popup_again').style.textAlign = 'center';
+        document.getElementById('popup_again').innerText = 'This is a P.E. class! No results from RMP.';
         return;
     }
     //set campus name according to campus initials found in course
@@ -160,7 +197,9 @@ function get_search(search_url, prof1, campus_initial) {
             //case where no professor found
             if (prof_list.length==0) {
                 var message = 'Sorry, there does not appear to be a ' + prof1 + ' at ' + campus_initial + ' within RMP.';
-                document.getElementById('popup_title').innerText = message;
+                document.getElementById('popup_again').style.textAlign = 'center';
+                document.getElementById('popup_again').innerText = message;
+                document.getElementById('popup_title').innerText = 'No Results Found.'
                 console.log('Professor not found.');
             }
             
@@ -169,7 +208,7 @@ function get_search(search_url, prof1, campus_initial) {
                 var prof_id = prof_list[0].getElementsByTagName('a')[0].getAttribute('href');
                 user_url = page_url+prof_id
                 page_url = proxy_url + user_url;
-                setTimeout( function() {get_prof(page_url, user_url);}, 1000);
+                setTimeout( function() {get_prof(page_url, user_url, prof1);}, 1000);
                 console.log('Professor found.')
             }
 		}
@@ -177,7 +216,7 @@ function get_search(search_url, prof1, campus_initial) {
     search_request.open("GET", search_url, true);
     search_request.send();
 }
-function get_prof(page_url, user_url) {
+function get_prof(page_url, user_url, prof1) {
     var prof_request = new XMLHttpRequest();
 	prof_request.onreadystatechange = function(){
 		if (prof_request.readyState == 4 && prof_request.status == 200){
@@ -189,50 +228,52 @@ function get_prof(page_url, user_url) {
             var num_ratings = prof_div.getElementsByClassName('table-toggle rating-count active');
             var tag_list = prof_div.getElementsByClassName('tag-box-choosetags');
 
-            //insert ratings into popup
+            //format ratings
             var overall = 'Overall Rating: ' + ratings[0].innerText.trim() + '/5.0';
-            var again = 'Take Again Percent: ' + ratings[1].innerText.trim();
+            var again = 'Take-Again Percentage: ' + ratings[1].innerText.trim();
             var difficulty = 'Difficulty: ' + ratings[2].innerText.trim() + '/5.0';
             var num = num_ratings[0].innerText.trim();
             var tags = 'No tags available.';
-            if (tag_list.length == 1) {
-                tags = 'Tags: ' + tag_list[0].innerText;
+            if (tag_list.length >= 1) {
+                tags = 'Top Tag: ' + tag_list[0].innerText;
             }
-            else if (tag_list.length == 2) {
-                tags = 'Tags: ' + tag_list[0].innerText + ', ' + tag_list[1].innertext;
-            }
-            else {
-                tags = 'Tags: ' + tag_list[0].innerText + ', ' + tag_list[1].innerText + ', ' + tag_list[2].innerText;
-            }
+            
+            var anchor = document.createElement('a');
+            anchor.id = 'anchor_link';
+            anchor.target = '_blank';
+            anchor.rel = 'noopener noreferrer';
+            anchor.href = user_url;
+            document.getElementById('popup_link').appendChild(anchor);
+            
+            //insert ratings into popup
+            document.getElementById('popup_title').innerText = prof1 + ':';
+            document.getElementById('popup_overall').innerText = overall;
+            document.getElementById('popup_difficulty').innerText = difficulty;
+            document.getElementById('popup_again').innerText = again;
+            document.getElementById('popup_tags').innerText = tags;
+            document.getElementById('popup_num').innerText = num;
+            document.getElementById('anchor_link').innerText = 'Click for full RMP ratings.';
 
-            console.log(overall);
-            console.log(again);
-            console.log(difficulty);
-            console.log(tags);
-            console.log(num);
-            console.log(user_url);
+            //change popup backgrounds for graphic and link rows
+            change_backgrounds();
 		}
     }
     prof_request.open("GET", page_url, true);
     prof_request.send();
 }
 
+//change popup backgrounds for graphic and link rows
+function change_backgrounds() {
+    document.getElementById('popup_link').style.backgroundColor = 'linear-gradient(rgba(0,0,0,.9), rgba(0,0,0,0.9))';
+    document.getElementById('overall_graphic').style.backgroundColor = '#ddd';
+    document.getElementById('difficulty_graphic').style.backgroundColor = '#ddd';
+    document.getElementById('again_graphic').style.backgroundColor = '#ddd';
+}
+
 //opens stat box
 function open_box() {
-    //get information and display
-    setTimeout(get_description, 100);
-    console.log('Getting information from description.');
-
-    var popup_title = document.getElementById('popup_title');
-    popup_title.classList.toggle("show");
-
-    //var popup_overall = document.getElementById('popup_overall');
-    //popup_overall.classList.toggle("show");
-    //var popup_difficulty = document.getElementById('popup_difficulty');
-    //popup_difficulty.classList.toggle("show");
-    //var popup_num = document.getElementById('popup_num');
-    //popup_num.classList.toggle("show");
-
+    var popup = document.getElementById('popup_box');
+    popup.classList.toggle('show');
     console.log('Popup box opened.');
 }
 
@@ -249,20 +290,17 @@ function update_lists(){
     plus_list = document.getElementsByClassName('course-box-button course-box-add-button icon ion-plus')
     for (var i = 0; i < plus_list.length; i++) {
         plus_list[i].addEventListener('click', function(){ 
-            setTimeout(update_lists, 1000);
+            setTimeout(update_lists, 500);
         })
     }
     ex_list = document.getElementsByClassName('course-box-button course-box-remove-button icon ion-close');
     for (var i = 0; i < ex_list.length; i++) {
         ex_list[i].addEventListener('click', function(){ 
-            setTimeout(update_lists, 1000);
+            setTimeout(update_lists, 500);
             })
     }
     console.log('lists updated');
 }
-
-//update course_list and schedule_list automatically after 3 minutes
-setInterval(update_lists, 180000);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //--------------------------------------Event Listeners------------------------------------------------
@@ -281,18 +319,22 @@ for (var i = 0; i < schedule_list.length; i++){
 
 //create new schedule_list and course_list when user types in search box 
 document.getElementById('course-search-course-name-input').addEventListener('input', function(){ 
-    setTimeout(update_lists, 1000);
+    setTimeout(update_lists, 500);
     });
 //update schedule_list, course_list, plus_list, and ex_list when user adds/removes course from schedule
 plus_list = document.getElementsByClassName('course-box-button course-box-add-button icon ion-plus')
 for (var i = 0; i < plus_list.length; i++) {
     plus_list[i].addEventListener('click', function(){ 
-        setTimeout(update_lists, 1000);
+        setTimeout(update_lists, 500);
         })
 }
 ex_list = document.getElementsByClassName('course-box-button course-box-remove-button icon ion-close');
 for (var i = 0; i < ex_list.length; i++) {
     ex_list[i].addEventListener('click', function(){ 
-        setTimeout(update_lists, 1000);
+        setTimeout(update_lists, 500);
         })
 }
+console.log('Lists initialized.')
+
+//update course_list and schedule_list automatically after 3 minutes
+setInterval(update_lists, 180000);
