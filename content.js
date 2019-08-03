@@ -40,7 +40,7 @@ function inject_cell(){
     
     //in case of course description text overflow due to button injection
     var description_container = document.getElementById('course-description-box-outer')
-    description_container.style.height = "auto";
+    description_container.style.height = 'auto';
 
     //get information and display
     setTimeout(get_description, 1000);
@@ -80,6 +80,8 @@ function create_popup(container) {
     var popup_again = document.createElement('div');
     popup_again.id = 'popup_again';
     popup_again.className = 'popuptext';
+    popup_again.style.textAlign = 'center';
+    popup_again.innerText = 'Loading... (~3 Seconds)';
     container.appendChild(popup_again);
 
     var again_graphic = document.createElement('div');
@@ -246,6 +248,7 @@ function get_prof(page_url, user_url, prof1) {
             document.getElementById('popup_title').innerText = prof1 + ':';
             document.getElementById('popup_overall').innerText = overall;
             document.getElementById('popup_difficulty').innerText = difficulty;
+            document.getElementById('popup_again').style.textAlign = 'left';
             document.getElementById('popup_again').innerText = again;
             document.getElementById('popup_tags').innerText = tags;
             document.getElementById('popup_num').innerText = num;
