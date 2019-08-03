@@ -50,7 +50,7 @@ function inject_cell(){
     document.getElementById('rmp-button').addEventListener('click', open_box);
 }
 
-//creates the span elements in the popup box and appends to inputted container div
+//creates the div elements in the popup box and appends to inputted container div
 function create_popup(container) {
     var popup_title = document.createElement('div');
     popup_title.id = 'popup_title';
@@ -101,8 +101,6 @@ function create_popup(container) {
     popup_link.id = 'popup_link';
     popup_link.className = 'popuptext';
     container.appendChild(popup_link);
-
-
 }
 
 //function for getting professor and class information
@@ -144,7 +142,6 @@ function get_description() {
         campus_initial = 'Claremont McKenna College';
     }
 
-
     //case with extra row in description box due to multiple meeting locations/times (rows usually 12)
     if (rows == 14) {
         prof_name = prof_name.nextSibling.nextSibling;
@@ -154,7 +151,7 @@ function get_description() {
 
     //format and display professor information
     var popup_title = document.getElementById('popup_title');
-    var names_initial = prof_name.innerText.split('and').join(',').split(',');
+    var names_initial = prof_name.innerText.split(' and ').join(',').split(',');
     var names_formatted = [];
     var prof1 = ''; 
     var prof2 = '';
@@ -179,7 +176,6 @@ function get_description() {
     var teacher_name = names_formatted[0] + '+' + names_formatted[1]; //search query for teacher name
     var search_url = 'https://cors-anywhere.herokuapp.com/http://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=' + campus_name + '&queryoption=HEADER&query=' + teacher_name + '&facetSearch=true';
     get_search(search_url, prof1, campus_initial);
-    
 }
 
 function get_search(search_url, prof1, campus_initial) {
@@ -294,7 +290,6 @@ function update_graphics(overall, difficulty, again) {
         color(again_bar, 'normal');
     }
     document.getElementById('again_graphic').appendChild(again_bar);
-    
 }
 
 //changes color of bar to green/yellow/orange/red according to the percentage
@@ -339,7 +334,7 @@ function change_backgrounds() {
     document.getElementById('again_graphic').style.backgroundColor = '#ddd';
 }
 
-//opens stat box
+//opens profesor ratings box
 function open_box() {
     var popup = document.getElementById('popup_box');
     popup.classList.toggle('show');
@@ -405,5 +400,5 @@ for (var i = 0; i < ex_list.length; i++) {
 }
 console.log('Lists initialized.')
 
-//update course_list and schedule_list automatically after 3 minutes
-setInterval(update_lists, 180000);
+//update course_list and schedule_list automatically after 2 minutes
+setInterval(update_lists, 120000);
