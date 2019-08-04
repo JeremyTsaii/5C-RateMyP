@@ -3,12 +3,16 @@
 //Update the list of course boxes whenever the user types into the search box or adds/removes a course.
 //Upon click of injected button, get the professor's name and the campus.
 //Use professor name and campus to get the url of the search and make a request to find the teacher id.
-//Lastly, get the url of the statistics page using the teacher id and make a request to get the ratings.
+//Next, get the url of the statistics page using the teacher id and make a request to get the ratings.
 //Finally, insert the gained ratings into the popup that appears when users click on the injected button.
 
 //sends message to background script to activate extension icon
 chrome.runtime.sendMessage({type:'showPageAction'});
-console.log("RMP extension initialized.");
+console.log("RMP extension activated.");
+
+//create/clear storage dictionary for professors on every refresh
+var storage_dict = {};
+console.log('Empty storage dictionary created.')
 
 //load css 
 var head = document.getElementsByTagName('HEAD')[0];  
@@ -174,10 +178,25 @@ function get_description() {
         prof1 = "Prof. " + names_formatted[0] + ' ' + names_formatted[1];
     }
 
-    //gather information from rmp search page using professor and campus name
-    var teacher_name = names_formatted[0] + '+' + names_formatted[1]; //search query for teacher name
-    var search_url = 'https://cors-anywhere.herokuapp.com/http://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=' + campus_name + '&queryoption=HEADER&query=' + teacher_name + '&facetSearch=true';
-    get_search(search_url, prof1, campus_initial);
+    //if prof_name already within storage_dict, take from Chrome.Storage and override current popup
+    console.log('Checking storage for ' + prof1 + '.');
+    if (prof1 in storage_dict) {
+        //remove current popup
+        var old_child = document.getElementById('popup_box');
+        old_child.parentNode.removeChild(old_child);
+        //append retrieved popup into correct position
+        var new_child = storage_dict[prof1];
+        var anchor = document.getElementById('rmp-button').nextSibling.nextSibling; //reference point for insertion
+        anchor.parentNode.insertBefore(new_child, anchor);
+        console.log(prof1 + ' found and retrieved from storage.');
+        }
+    //if prof_name not in storage, gather information from rmp search page using professor and campus name
+    else {
+        console.log(prof1 + ' not found in storage.')
+        var teacher_name = names_formatted[0] + '+' + names_formatted[1]; //search query for teacher name
+        var search_url = 'https://cors-anywhere.herokuapp.com/http://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=' + campus_name + '&queryoption=HEADER&query=' + teacher_name + '&facetSearch=true';
+        get_search(search_url, prof1, campus_initial);
+    }
 }
 
 function get_search(search_url, prof1, campus_initial) {
@@ -198,7 +217,11 @@ function get_search(search_url, prof1, campus_initial) {
                 document.getElementById('popup_again').style.textAlign = 'center';
                 document.getElementById('popup_again').innerText = message;
                 document.getElementById('popup_title').innerText = 'No Results Found.'
-                console.log('Professor not found.');
+
+                //add popup div to storage_dict
+                storage_dict[prof1] = document.getElementById('popup_box');
+                console.log(prof1 + ' added to storage.');
+                console.log('Professor not found on RMP.');
             }
             
             //take the first professor in search results 
@@ -207,7 +230,7 @@ function get_search(search_url, prof1, campus_initial) {
                 user_url = page_url+prof_id
                 page_url = proxy_url + user_url;
                 setTimeout( function() {get_prof(page_url, user_url, prof1);}, 1000);
-                console.log('Professor found.')
+                console.log('Professor found on RMP.')
             }
 		}
     }
@@ -259,6 +282,10 @@ function get_prof(page_url, user_url, prof1) {
 
             //change the percent bar color according to inputted ratings
             update_graphics(ratings[0].innerText.trim(), ratings[2].innerText.trim(), ratings[1].innerText.trim());
+
+            //add popup div to storage_dict
+            storage_dict[prof1] = document.getElementById('popup_box');
+            console.log(prof1 + ' added to storage.');                                                        
 		}
     }
     prof_request.open("GET", page_url, true);
@@ -342,6 +369,7 @@ function open_box() {
     var popup = document.getElementById('popup_box');
     popup.classList.toggle('show');
     console.log('Popup box opened.');
+    console.log(storage_dict);
 }
 
 //function for updating course_list and schedule_list
