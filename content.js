@@ -2,9 +2,14 @@
 //First, keep track of all the course boxes and inject the button into whichever course is clicked on.
 //Update the list of course boxes whenever the user types into the search box or adds/removes a course.
 //Upon click of injected button, get the professor's name and the campus.
-//Use professor name and campus to get the url of the search and make a request to find the teacher id.
+//If the professor is already within the storage dictionary, display the div that is stored using the
+//professor's name as the key.
+//If not in dictionary, use professor name and campus to get the url of the search 
+//and make a request to find the teacher id.
 //Next, get the url of the statistics page using the teacher id and make a request to get the ratings.
 //Finally, insert the gained ratings into the popup that appears when users click on the injected button.
+//Store the div containing the ratings and graphics pertaining to the professor in the storage dictionary
+//using the professor's name as the key. 
 
 //sends message to background script to activate extension icon
 chrome.runtime.sendMessage({type:'showPageAction'});
@@ -161,6 +166,11 @@ function get_description() {
     var names_formatted = [];
     var prof1 = ''; 
     var prof2 = '';
+    var prof3 = '';
+
+
+    //case with three professors listed
+
 
     //case with two professors listed
     if (names_initial.length == 4) {
@@ -229,7 +239,7 @@ function get_search(search_url, prof1, campus_initial) {
                 var prof_id = prof_list[0].getElementsByTagName('a')[0].getAttribute('href');
                 user_url = page_url+prof_id
                 page_url = proxy_url + user_url;
-                setTimeout( function() {get_prof(page_url, user_url, prof1);}, 1000);
+                setTimeout( function() {get_prof(page_url, user_url, prof1, campus_initial);}, 1000);
                 console.log('Professor found on RMP.')
             }
 		}
@@ -237,7 +247,7 @@ function get_search(search_url, prof1, campus_initial) {
     search_request.open("GET", search_url, true);
     search_request.send();
 }
-function get_prof(page_url, user_url, prof1) {
+function get_prof(page_url, user_url, prof1, campus_initial) {
     var prof_request = new XMLHttpRequest();
 	prof_request.onreadystatechange = function(){
 		if (prof_request.readyState == 4 && prof_request.status == 200){
@@ -245,47 +255,59 @@ function get_prof(page_url, user_url, prof1) {
             //insert response.text into a div so we can search for elements within
             var prof_div = document.createElement('div');
             prof_div.innerHTML = prof_request.responseText;
-            var ratings = prof_div.getElementsByClassName('grade');
-            var num_ratings = prof_div.getElementsByClassName('table-toggle rating-count active');
-            var tag_list = prof_div.getElementsByClassName('tag-box-choosetags');
 
-            //format ratings
-            var overall = 'Overall Rating: ' + ratings[0].innerText.trim() + '/5.0';
-            var again = 'Take-Again Percentage: ' + ratings[1].innerText.trim();
-            var difficulty = 'Difficulty: ' + ratings[2].innerText.trim() + '/5.0';
-            var num = num_ratings[0].innerText.trim();
-            var tags = 'No tags available.';
-            if (tag_list.length >= 1) {
-                tags = 'Top Tag: ' + tag_list[0].innerText;
+            //case where professor has a page but it has no ratings
+            var check_empty = prof_div.getElementsByClassName('headline');
+            if (check_empty.length>0) {
+                var message = 'It appears ' + prof1 + ' at ' + campus_initial + ' has a page within RMP but has no reviews yet.';
+                document.getElementById('popup_again').style.textAlign = 'center';
+                document.getElementById('popup_again').innerText = message;
             }
-            
-            //append link to popup_link div
-            var anchor = document.createElement('a');
-            anchor.id = 'anchor_link';
-            anchor.target = '_blank';
-            anchor.rel = 'noopener noreferrer';
-            anchor.href = user_url;
-            document.getElementById('popup_link').appendChild(anchor);
-            
-            //insert ratings into popup
-            document.getElementById('popup_title').innerText = prof1 + ':';
-            document.getElementById('popup_overall').innerText = overall;
-            document.getElementById('popup_difficulty').innerText = difficulty;
-            document.getElementById('popup_again').style.textAlign = 'left';
-            document.getElementById('popup_again').innerText = again;
-            document.getElementById('popup_tags').innerText = tags;
-            document.getElementById('popup_num').innerText = num;
-            document.getElementById('anchor_link').innerText = 'Click for full RMP ratings.';
 
-            //change popup backgrounds for graphic and link rows
-            change_backgrounds();
-
-            //change the percent bar color according to inputted ratings
-            update_graphics(ratings[0].innerText.trim(), ratings[2].innerText.trim(), ratings[1].innerText.trim());
-
-            //add popup div to storage_dict
-            storage_dict[prof1] = document.getElementById('popup_box');
-            console.log(prof1 + ' added to storage.');                                                        
+            else {
+                var ratings = prof_div.getElementsByClassName('grade');
+                var num_ratings = prof_div.getElementsByClassName('table-toggle rating-count active');
+                var tag_list = prof_div.getElementsByClassName('tag-box-choosetags');
+    
+                //format ratings
+                var overall = 'Overall Rating: ' + ratings[0].innerText.trim() + '/5.0';
+                var again = 'Take-Again Percentage: ' + ratings[1].innerText.trim();
+                var difficulty = 'Difficulty: ' + ratings[2].innerText.trim() + '/5.0';
+                var num = num_ratings[0].innerText.trim();
+                var tags = 'No tags available.';
+                if (tag_list.length >= 1) {
+                    tags = 'Top Tag: ' + tag_list[0].innerText;
+                }
+                
+                //append link to popup_link div
+                var anchor = document.createElement('a');
+                anchor.id = 'anchor_link';
+                anchor.target = '_blank';
+                anchor.rel = 'noopener noreferrer';
+                anchor.href = user_url;
+                document.getElementById('popup_link').appendChild(anchor);
+                
+                //insert ratings into popup
+                document.getElementById('popup_title').innerText = prof1 + ':';
+                document.getElementById('popup_overall').innerText = overall;
+                document.getElementById('popup_difficulty').innerText = difficulty;
+                document.getElementById('popup_again').style.textAlign = 'left';
+                document.getElementById('popup_again').innerText = again;
+                document.getElementById('popup_tags').innerText = tags;
+                document.getElementById('popup_num').innerText = num;
+                document.getElementById('anchor_link').innerText = 'Click for full RMP ratings.';
+    
+                //change popup backgrounds for graphic and link rows
+                change_backgrounds();
+    
+                //change the percent bar color according to inputted ratings
+                update_graphics(ratings[0].innerText.trim(), ratings[2].innerText.trim(), ratings[1].innerText.trim());
+    
+                //add popup div to storage_dict
+                storage_dict[prof1] = document.getElementById('popup_box');
+                console.log(prof1 + ' added to storage.'); 
+            }
+                                                       
 		}
     }
     prof_request.open("GET", page_url, true);
