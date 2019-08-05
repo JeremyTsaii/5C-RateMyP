@@ -28,57 +28,26 @@ link.href = 'main.css';
 head.appendChild(link); 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
-//-------------------------------Event Listeners and Update Functions----------------------------------
+//--------------------------------------Event Listeners------------------------------------------------
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //inject button when course is clicked on
-var course_list = document.getElementsByClassName('course-box-content');
-for (var i = 0; i < course_list.length; i++){
-    course_list[i].addEventListener('click', inject_cell);
-}
-
-//create new course_list when user types in search box 
-document.getElementById('course-search-course-name-input').addEventListener('input', function(){ 
-    setTimeout(update_lists, 500);
-    });
-//update course_list, plus_list, and ex_list when user adds/removes course from schedule
-plus_list = document.getElementsByClassName('course-box-button course-box-add-button icon ion-plus')
-for (var i = 0; i < plus_list.length; i++) {
-    plus_list[i].addEventListener('click', function(){ 
-        setTimeout(update_lists, 500);
-        })
-}
-ex_list = document.getElementsByClassName('course-box-button course-box-remove-button icon ion-close');
-for (var i = 0; i < ex_list.length; i++) {
-    ex_list[i].addEventListener('click', function(){ 
-        setTimeout(update_lists, 500);
-        })
-}
-console.log('Lists initialized.')
-
-//update course_list and schedule_list automatically after 2 minutes
-setInterval(update_lists, 120000);
-
-//function for updating course_list and schedule_list
-function update_lists(){
-    course_list = document.getElementsByClassName('course-box-content');
-    for (var i = 0; i < course_list.length; i++){
-        course_list[i].addEventListener('click', inject_cell);
+//listen for clicks on courses in the course search div
+var course_search = document.getElementById('course-search-results-list');
+course_search.addEventListener('click', function(e) {
+    console.log(e.target.className);
+    if (e.target && e.target.className == 'course-box-text' || e.target.className == 'course-box-content') {
+        inject_cell();
     }
-    plus_list = document.getElementsByClassName('course-box-button course-box-add-button icon ion-plus')
-    for (var i = 0; i < plus_list.length; i++) {
-        plus_list[i].addEventListener('click', function(){ 
-            setTimeout(update_lists, 500);
-        })
+});
+//listen for clicks on courses in the chosen course list div
+var selected_courses = document.getElementById('selected-courses-list');
+selected_courses.addEventListener('click', function(e) {
+    console.log(e.target.className);
+    if (e.target && e.target.className == 'course-box-text' || e.target.className == 'course-box-content') {
+        inject_cell();
     }
-    ex_list = document.getElementsByClassName('course-box-button course-box-remove-button icon ion-close');
-    for (var i = 0; i < ex_list.length; i++) {
-        ex_list[i].addEventListener('click', function(){ 
-            setTimeout(update_lists, 500);
-            })
-    }
-    console.log('lists updated');
-}
+});
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //--------------------------------------Main Functions-------------------------------------------------
@@ -228,7 +197,6 @@ function get_description() {
         document.getElementById('popup_again').innerText = message;
         return;
     }
-    console.log(rows);
     console.log(class_info.innerText);
     console.log(prof_name.innerText);
 
@@ -282,11 +250,11 @@ function get_search(search_url, prof1, campus_initial) {
                 document.getElementById('popup_again').style.textAlign = 'center';
                 document.getElementById('popup_again').innerText = message;
                 document.getElementById('popup_title').innerText = 'No Results Found.'
+                console.log('Professor not found on RMP.');
 
                 //add popup div to storage_dict
                 storage_dict[prof1] = document.getElementById('popup_box');
                 console.log(prof1 + ' added to storage.');
-                console.log('Professor not found on RMP.');
             }
             //take the first professor in search results 
             else{
@@ -446,7 +414,6 @@ function open_box() {
     var popup = document.getElementById('popup_box');
     popup.classList.toggle('show');
     console.log('Popup box opened.');
-    console.log(storage_dict);
 }
 
 
