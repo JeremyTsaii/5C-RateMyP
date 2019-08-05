@@ -35,16 +35,22 @@ head.appendChild(link);
 //listen for clicks on courses in the course search div
 var course_search = document.getElementById('course-search-results-list');
 course_search.addEventListener('click', function(e) {
-    console.log(e.target.className);
-    if (e.target && e.target.className == 'course-box-text' || e.target.className == 'course-box-content') {
+    if (e.target && e.target.className == 'course-box-text' || e.target.className == 'course-box-course-code' || e.target.className == 'course-box-content') {
         inject_cell();
     }
 });
 //listen for clicks on courses in the chosen course list div
 var selected_courses = document.getElementById('selected-courses-list');
 selected_courses.addEventListener('click', function(e) {
+    if (e.target && e.target.className == 'course-box-text' || e.target.className == 'course-box-course-code' || e.target.className == 'course-box-content') {
+        inject_cell();
+    }
+});
+//listen for clicks on courses in schedule table div
+var table = document.getElementById('schedule-table');
+table.addEventListener('click', function(e) {
     console.log(e.target.className);
-    if (e.target && e.target.className == 'course-box-text' || e.target.className == 'course-box-content') {
+    if (e.target && e.target.className == 'schedule-slot-course-name' || e.target.className == 'schedule-slot-course-code') {
         inject_cell();
     }
 });
