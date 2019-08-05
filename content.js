@@ -36,17 +36,12 @@ var course_list = document.getElementsByClassName('course-box-content');
 for (var i = 0; i < course_list.length; i++){
     course_list[i].addEventListener('click', inject_cell);
 }
-//inject button when course on schedule is clicked on
-var schedule_list = document.getElementsByClassName('schedule-slot');
-for (var i = 0; i < schedule_list.length; i++){
-    schedule_list[i].addEventListener('click', inject_cell);
-}
 
-//create new schedule_list and course_list when user types in search box 
+//create new course_list when user types in search box 
 document.getElementById('course-search-course-name-input').addEventListener('input', function(){ 
     setTimeout(update_lists, 500);
     });
-//update schedule_list, course_list, plus_list, and ex_list when user adds/removes course from schedule
+//update course_list, plus_list, and ex_list when user adds/removes course from schedule
 plus_list = document.getElementsByClassName('course-box-button course-box-add-button icon ion-plus')
 for (var i = 0; i < plus_list.length; i++) {
     plus_list[i].addEventListener('click', function(){ 
@@ -69,10 +64,6 @@ function update_lists(){
     course_list = document.getElementsByClassName('course-box-content');
     for (var i = 0; i < course_list.length; i++){
         course_list[i].addEventListener('click', inject_cell);
-    }
-    schedule_list = document.getElementsByClassName('schedule-slot');
-    for (var i = 0; i < schedule_list.length; i++){
-        schedule_list[i].addEventListener('click', inject_cell);
     }
     plus_list = document.getElementsByClassName('course-box-button course-box-add-button icon ion-plus')
     for (var i = 0; i < plus_list.length; i++) {
@@ -218,15 +209,15 @@ function get_description() {
         campus_name = 'Claremont+McKenna+College'
         campus_initial = 'Claremont McKenna College';
     }
-
+    
     //case with extra rows in description box due to multiple meeting locations/times (rows usually 12)
-    if (rows == 14) {
+    if (rows == 16) {
         prof_name = prof_name.nextSibling.nextSibling;
     }
-    else if (rows == 16) {
+    else if (rows == 18) {
         prof_name = prof_name.nextSibling.nextSibling.nextSibling.nextSibling;
     }
-    else if (rows == 18) {
+    else if (rows == 20) {
         prof_name = prof_name.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling;
     }
 
