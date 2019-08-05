@@ -27,6 +27,72 @@ link.type = 'text/css';
 link.href = 'main.css'; 
 head.appendChild(link); 
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//-------------------------------Event Listeners and Update Functions----------------------------------
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//inject button when course is clicked on
+var course_list = document.getElementsByClassName('course-box-content');
+for (var i = 0; i < course_list.length; i++){
+    course_list[i].addEventListener('click', inject_cell);
+}
+//inject button when course on schedule is clicked on
+var schedule_list = document.getElementsByClassName('schedule-slot');
+for (var i = 0; i < schedule_list.length; i++){
+    schedule_list[i].addEventListener('click', inject_cell);
+}
+
+//create new schedule_list and course_list when user types in search box 
+document.getElementById('course-search-course-name-input').addEventListener('input', function(){ 
+    setTimeout(update_lists, 500);
+    });
+//update schedule_list, course_list, plus_list, and ex_list when user adds/removes course from schedule
+plus_list = document.getElementsByClassName('course-box-button course-box-add-button icon ion-plus')
+for (var i = 0; i < plus_list.length; i++) {
+    plus_list[i].addEventListener('click', function(){ 
+        setTimeout(update_lists, 500);
+        })
+}
+ex_list = document.getElementsByClassName('course-box-button course-box-remove-button icon ion-close');
+for (var i = 0; i < ex_list.length; i++) {
+    ex_list[i].addEventListener('click', function(){ 
+        setTimeout(update_lists, 500);
+        })
+}
+console.log('Lists initialized.')
+
+//update course_list and schedule_list automatically after 2 minutes
+setInterval(update_lists, 120000);
+
+//function for updating course_list and schedule_list
+function update_lists(){
+    course_list = document.getElementsByClassName('course-box-content');
+    for (var i = 0; i < course_list.length; i++){
+        course_list[i].addEventListener('click', inject_cell);
+    }
+    schedule_list = document.getElementsByClassName('schedule-slot');
+    for (var i = 0; i < schedule_list.length; i++){
+        schedule_list[i].addEventListener('click', inject_cell);
+    }
+    plus_list = document.getElementsByClassName('course-box-button course-box-add-button icon ion-plus')
+    for (var i = 0; i < plus_list.length; i++) {
+        plus_list[i].addEventListener('click', function(){ 
+            setTimeout(update_lists, 500);
+        })
+    }
+    ex_list = document.getElementsByClassName('course-box-button course-box-remove-button icon ion-close');
+    for (var i = 0; i < ex_list.length; i++) {
+        ex_list[i].addEventListener('click', function(){ 
+            setTimeout(update_lists, 500);
+            })
+    }
+    console.log('lists updated');
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//--------------------------------------Main Functions-------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
 //function to inject button at the top of information box
 function inject_cell(){
     //button
@@ -114,7 +180,7 @@ function create_popup(container) {
     container.appendChild(popup_link);
 }
 
-//function for getting professor and class information
+//obtains professor and class information 
 function get_description() {
     //get information from description box on hyperschedule
     var description_box = document.getElementById('course-description-box');
@@ -182,8 +248,6 @@ function get_description() {
     var prof1 = ''; 
     var prof2 = ''; //future implementation with classes having multiple professors 
     var prof3 = ''; //currently only retrieve ratings of the first professor listed 
-
-    //case with one professor listed
     names_formatted.push(names_initial[1].trim().split(' ')[0]);
     names_formatted.push(names_initial[0].trim());
     prof1 = "Prof. " + names_formatted[0] + ' ' + names_formatted[1];
@@ -209,13 +273,13 @@ function get_description() {
     }
 }
 
+//check if professor has page and ratings on rmp using request
 function get_search(search_url, prof1, campus_initial) {
     var proxy_url = 'https://cors-anywhere.herokuapp.com/'
     var page_url = 'https://www.ratemyprofessors.com' //before appending teacher id
     var search_request = new XMLHttpRequest();
 	search_request.onreadystatechange = function(){
 		if (search_request.readyState == 4 && search_request.status == 200){
-
             //insert response.text into a div so we can search for elements within
             var search_div = document.createElement('div');
             search_div.innerHTML = search_request.responseText;
@@ -233,7 +297,6 @@ function get_search(search_url, prof1, campus_initial) {
                 console.log(prof1 + ' added to storage.');
                 console.log('Professor not found on RMP.');
             }
-            
             //take the first professor in search results 
             else{
                 var prof_id = prof_list[0].getElementsByTagName('a')[0].getAttribute('href');
@@ -247,11 +310,12 @@ function get_search(search_url, prof1, campus_initial) {
     search_request.open("GET", search_url, true);
     search_request.send();
 }
+
+//attain ratings/reviews from rmp using request
 function get_prof(page_url, user_url, prof1, campus_initial) {
     var prof_request = new XMLHttpRequest();
 	prof_request.onreadystatechange = function(){
 		if (prof_request.readyState == 4 && prof_request.status == 200){
-
             //insert response.text into a div so we can search for elements within
             var prof_div = document.createElement('div');
             prof_div.innerHTML = prof_request.responseText;
@@ -263,7 +327,7 @@ function get_prof(page_url, user_url, prof1, campus_initial) {
                 document.getElementById('popup_again').style.textAlign = 'center';
                 document.getElementById('popup_again').innerText = message;
             }
-
+            //professor has a page with ratings
             else {
                 var ratings = prof_div.getElementsByClassName('grade');
                 var num_ratings = prof_div.getElementsByClassName('table-toggle rating-count active');
@@ -394,64 +458,5 @@ function open_box() {
     console.log(storage_dict);
 }
 
-//function for updating course_list and schedule_list
-function update_lists(){
-    course_list = document.getElementsByClassName('course-box-content');
-    for (var i = 0; i < course_list.length; i++){
-        course_list[i].addEventListener('click', inject_cell);
-    }
-    schedule_list = document.getElementsByClassName('schedule-slot');
-    for (var i = 0; i < schedule_list.length; i++){
-        schedule_list[i].addEventListener('click', inject_cell);
-    }
-    plus_list = document.getElementsByClassName('course-box-button course-box-add-button icon ion-plus')
-    for (var i = 0; i < plus_list.length; i++) {
-        plus_list[i].addEventListener('click', function(){ 
-            setTimeout(update_lists, 500);
-        })
-    }
-    ex_list = document.getElementsByClassName('course-box-button course-box-remove-button icon ion-close');
-    for (var i = 0; i < ex_list.length; i++) {
-        ex_list[i].addEventListener('click', function(){ 
-            setTimeout(update_lists, 500);
-            })
-    }
-    console.log('lists updated');
-}
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-//--------------------------------------Event Listeners------------------------------------------------
-///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//inject button when course is clicked on
-var course_list = document.getElementsByClassName('course-box-content');
-for (var i = 0; i < course_list.length; i++){
-    course_list[i].addEventListener('click', inject_cell);
-}
-//inject button when course on schedule is clicked on
-var schedule_list = document.getElementsByClassName('schedule-slot');
-for (var i = 0; i < schedule_list.length; i++){
-    schedule_list[i].addEventListener('click', inject_cell);
-}
-
-//create new schedule_list and course_list when user types in search box 
-document.getElementById('course-search-course-name-input').addEventListener('input', function(){ 
-    setTimeout(update_lists, 500);
-    });
-//update schedule_list, course_list, plus_list, and ex_list when user adds/removes course from schedule
-plus_list = document.getElementsByClassName('course-box-button course-box-add-button icon ion-plus')
-for (var i = 0; i < plus_list.length; i++) {
-    plus_list[i].addEventListener('click', function(){ 
-        setTimeout(update_lists, 500);
-        })
-}
-ex_list = document.getElementsByClassName('course-box-button course-box-remove-button icon ion-close');
-for (var i = 0; i < ex_list.length; i++) {
-    ex_list[i].addEventListener('click', function(){ 
-        setTimeout(update_lists, 500);
-        })
-}
-console.log('Lists initialized.')
-
-//update course_list and schedule_list automatically after 2 minutes
-setInterval(update_lists, 120000);
