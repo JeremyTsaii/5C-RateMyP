@@ -153,10 +153,25 @@ function get_description() {
         campus_initial = 'Claremont McKenna College';
     }
 
-    //case with extra row in description box due to multiple meeting locations/times (rows usually 12)
+    //case with extra rows in description box due to multiple meeting locations/times (rows usually 12)
     if (rows == 14) {
         prof_name = prof_name.nextSibling.nextSibling;
     }
+    else if (rows == 16) {
+        prof_name = prof_name.nextSibling.nextSibling.nextSibling.nextSibling;
+    }
+    else if (rows == 18) {
+        prof_name = prof_name.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling;
+    }
+
+    //check if prof name is staff 
+    if (prof_name.innerText == 'Staff') {
+        var message = 'This is a course taught by Staff so there are no reviews.';
+        document.getElementById('popup_again').style.textAlign = 'center';
+        document.getElementById('popup_again').innerText = message;
+        return;
+    }
+    console.log(rows);
     console.log(class_info.innerText);
     console.log(prof_name.innerText);
 
