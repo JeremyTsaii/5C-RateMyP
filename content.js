@@ -180,28 +180,13 @@ function get_description() {
     var names_initial = prof_name.innerText.split(' and ').join(',').split(',');
     var names_formatted = [];
     var prof1 = ''; 
-    var prof2 = '';
-    var prof3 = '';
+    var prof2 = ''; //future implementation with classes having multiple professors 
+    var prof3 = ''; //currently only retrieve ratings of the first professor listed 
 
-
-    //case with three professors listed
-
-
-    //case with two professors listed
-    if (names_initial.length == 4) {
-        names_formatted.push(names_initial[1].trim().split(' ')[0]); //first prof first name
-        names_formatted.push(names_initial[0].trim()); //first prof last name
-        names_formatted.push(names_initial[3].trim().split(' ')[0]); //second prof first name
-        names_formatted.push(names_initial[2].trim()); //second prof last name
-        prof1 = 'Prof. ' + names_formatted[0] + ' ' + names_formatted[1];
-        prof2 = 'Prof. ' + names_formatted[2] + ' ' + names_formatted[3];
-    }
     //case with one professor listed
-    else if (names_initial.length == 2) {
-        names_formatted.push(names_initial[1].trim().split(' ')[0]);
-        names_formatted.push(names_initial[0].trim());
-        prof1 = "Prof. " + names_formatted[0] + ' ' + names_formatted[1];
-    }
+    names_formatted.push(names_initial[1].trim().split(' ')[0]);
+    names_formatted.push(names_initial[0].trim());
+    prof1 = "Prof. " + names_formatted[0] + ' ' + names_formatted[1];
 
     //if prof_name already within storage_dict, take from Chrome.Storage and override current popup
     console.log('Checking storage for ' + prof1 + '.');
