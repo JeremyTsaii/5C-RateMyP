@@ -49,8 +49,7 @@ selected_courses.addEventListener('click', function(e) {
 //listen for clicks on courses in schedule table div
 var table = document.getElementById('schedule-table');
 table.addEventListener('click', function(e) {
-    console.log(e.target.className);
-    if (e.target && e.target.className == 'schedule-slot-course-name' || e.target.className == 'schedule-slot-course-code') {
+    if (e.target && e.target.className == 'schedule-slot-course-name' || e.target.className == 'schedule-slot-course-code' || e.target.className == 'schedule-slot' || e.target.className == 'schedule-slot-text-wrapper') {
         inject_cell();
     }
 });
