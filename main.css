@@ -21,15 +21,15 @@
     visibility: hidden;
     display: inline-block;
     background-image: linear-gradient(rgba(0,0,0,.6), rgba(0,0,0,0.6));
-    width: 320px;
-    height: 300px;
+    width: 340px;
+    height: 330px;
     color: #fff;
     text-align: center;
     padding: 4px 4px;
     z-index: 1;
     position: absolute;
-    top: 130px;
-    right: 40px;
+    top: 120px;
+    right: 42px;
   }
 
 /*arrow pointing to container*/
@@ -46,65 +46,69 @@
 
   /*specific formatting of rating divs*/
   #popup_title {
-    width: 310px;
+    width: 330px;
     height: 10%;
     top: 0%;
   }
 
   #popup_overall {
-    width: 310px;
+    width: 330px;
     height: 10%;
     top: 10%;
     text-align: left;
+    padding-top: 5px;
   }
 
   #overall_graphic {
-    width: 310px;
+    width: 330px;
     height: 10%;
     top: 20%;
   }
 
   #popup_difficulty {
-    width: 310px;
+    width: 330px;
     height: 10%;
     top: 30%;
     text-align: left;
+    padding-top: 5px;
   }
 
   #difficulty_graphic {
-    width: 310px;
+    width: 330px;
     height: 10%;
     top: 40%;
   }
 
   #popup_again {
-    width: 310px;
+    width: 330px;
     height: 10%;
     top: 50%;
     text-align: left;
+    padding-top: 5px;
   }
 
   #again_graphic {
-    width: 310px;
+    width: 330px;
     height: 10%;
     top: 60%;
   }
 
   #popup_tags {
-    width: 310px;
+    width: 330px;
     height: 10%;
     top: 70%;
     text-align: left;
+    padding-top: 5px;
   }
 
   #popup_num {
-    width: 310px;
+    width: 330px;
     height: 10%;
     top: 80%;
   }
 
   #popup_link {
-    width: 310px;
+    width: 330px;
     height: 10%;
     top: 90%;
   }
@@ -113,7 +117,7 @@
   #overall_bar {
     color: grey;
     text-align: right;
-    padding-top: 2px;
+    padding-top: 4px;
     padding-bottom: 2px; 
     padding-right: 2px;
     height: 100%;
@@ -122,7 +126,7 @@
   #difficulty_bar {
     color: grey;
     text-align: right;
-    padding-top: 2px;
+    padding-top: 4px;
     padding-bottom: 2px; 
     padding-right: 2px;
     height: 100%;
@@ -131,7 +135,7 @@
   #again_bar {
     color: grey;
     text-align: right;
-    padding-top: 2px;
+    padding-top: 4px;
     padding-bottom: 2px; 
     padding-right: 2px;
     height: 100%;
