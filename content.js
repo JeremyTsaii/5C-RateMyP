@@ -31,26 +31,42 @@ head.appendChild(link);
 //--------------------------------------Event Listeners------------------------------------------------
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//indicates whether popup box is already open
+//default is false, change to true when rmp button is clicked, change back to false after another click
+var popup_open = false 
+
 //inject button when course is clicked on
 //listen for clicks on courses in the course search div
 var course_search = document.getElementById('course-search-results-list');
 course_search.addEventListener('click', function(e) {
-    if (e.target && e.target.className == 'course-box-text' || e.target.className == 'course-box-course-code' || e.target.className == 'course-box-content') {
+    if ((e.target && e.target.className == 'course-box-text' || e.target.className == 'course-box-course-code' || e.target.className == 'course-box-content')) {
         inject_cell();
+        if(popup_open) {
+            popup_open = false;
+            console.log('Popup box closed.')
+        }
     }
 });
 //listen for clicks on courses in the chosen course list div
 var selected_courses = document.getElementById('selected-courses-list');
 selected_courses.addEventListener('click', function(e) {
-    if (e.target && e.target.className == 'course-box-text' || e.target.className == 'course-box-course-code' || e.target.className == 'course-box-content') {
+    if ((e.target && e.target.className == 'course-box-text' || e.target.className == 'course-box-course-code' || e.target.className == 'course-box-content')) {
         inject_cell();
+        if(popup_open) {
+            popup_open = false;
+            console.log('Popup box closed.')
+        }
     }
 });
 //listen for clicks on courses in schedule table div
 var table = document.getElementById('schedule-table');
 table.addEventListener('click', function(e) {
-    if (e.target && e.target.className == 'schedule-slot-course-name' || e.target.className == 'schedule-slot-course-code' || e.target.className == 'schedule-slot' || e.target.className == 'schedule-slot-text-wrapper') {
+    if ((e.target && e.target.className == 'schedule-slot-course-name' || e.target.className == 'schedule-slot-course-code' || e.target.className == 'schedule-slot' || e.target.className == 'schedule-slot-text-wrapper')) {
         inject_cell();
+        if(popup_open) {
+            popup_open = false;
+            console.log('Popup box closed.')
+        }
     }
 });
 
@@ -81,10 +97,6 @@ function inject_cell(){
     //in case of course description text overflow due to button injection
     var description_container = document.getElementById('course-description-box-outer')
     description_container.style.height = 'auto';
-
-    //get information and display
-    setTimeout(get_description, 1000);
-    console.log('Getting information from description.');
 
     //open popup on button click 
     document.getElementById('rmp-button').addEventListener('click', open_box);
@@ -416,9 +428,28 @@ function change_backgrounds() {
 
 //opens profesor ratings box
 function open_box() {
-    var popup = document.getElementById('popup_box');
-    popup.classList.toggle('show');
-    console.log('Popup box opened.');
+    if(popup_open) {
+        //close popup box
+        var popup = document.getElementById('popup_box');
+        popup.classList.toggle('show');
+        console.log('Popup box closed.');
+
+        //indicate popup is closed
+        popup_open = false;
+    }
+    else {
+        //indicate popup is open
+        popup_open = true;
+
+        //get information and display
+        setTimeout(get_description, 1000);
+        console.log('Getting information from description.');
+
+        //open popup box
+        var popup = document.getElementById('popup_box');
+        popup.classList.toggle('show');
+        console.log('Popup box opened.');
+    }
 }
 
 
