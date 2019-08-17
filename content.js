@@ -236,6 +236,7 @@ function get_description() {
         old_child.parentNode.removeChild(old_child);
         //append retrieved popup into correct position
         var new_child = storage_dict[prof1];
+        new_child.className = 'popup show';
         var anchor = document.getElementById('rmp-button').nextSibling.nextSibling; //reference point for insertion
         anchor.parentNode.insertBefore(new_child, anchor);
         console.log(prof1 + ' found and retrieved from storage.');
@@ -431,9 +432,9 @@ function open_box() {
     if(popup_open) {
         //close popup box
         var popup = document.getElementById('popup_box');
-        popup.classList.toggle('show');
+        popup.className = 'popup';
         console.log('Popup box closed.');
-
+        
         //indicate popup is closed
         popup_open = false;
     }
@@ -447,7 +448,7 @@ function open_box() {
 
         //open popup box
         var popup = document.getElementById('popup_box');
-        popup.classList.toggle('show');
+        popup.className = 'popup show';
         console.log('Popup box opened.');
     }
 }
