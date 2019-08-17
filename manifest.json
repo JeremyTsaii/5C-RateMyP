@@ -4,10 +4,6 @@
     "description": "Conveniently view ratings of 5C professors while crafting your schedule!",
     "author": "Jeremy T.",
     "permissions": ["activeTab", "storage"],
-    "background": {
-        "persistent": false,
-        "scripts": ["background.js"]
-    },
     "content_scripts": [
         {
             "matches": ["http://hyperschedule.io/*", "https://hyperschedule.io/*"],
