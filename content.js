@@ -1,6 +1,5 @@
 //Overview of content script:
-//First, keep track of all the course boxes and inject the button into whichever course is clicked on.
-//Update the list of course boxes whenever the user types into the search box or adds/removes a course.
+//Inject button into course description box whenever course is clicked on.
 //Upon click of injected button, get the professor's name and the campus.
 //If the professor is already within the storage dictionary, display the div that is stored using the
 //professor's name as the key.
