@@ -90,8 +90,12 @@ function inject_cell(){
     console.log('Button injected.');
     
     //in case of course description text overflow due to button injection
-    var description_container = document.getElementById('course-description-box-outer')
+    var description_container = document.getElementById('course-description-box-outer');
     description_container.style.height = 'auto';
+
+    //center popup 
+    var parent = document.getElementById('course-description-box');
+    parent.style.position = 'relative';
 
     //open popup on button click 
     document.getElementById('rmp-button').addEventListener('click', open_box);
