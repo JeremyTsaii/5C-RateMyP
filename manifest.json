@@ -1,6 +1,6 @@
 {
     "name": "5C RateMyP",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "description": "Conveniently view ratings of 5C professors while crafting your schedule!",
     "author": "Jeremy T.",
     "permissions": ["activeTab", "storage"],
