@@ -10,10 +10,6 @@
 //Store the div containing the ratings and graphics pertaining to the professor in the storage dictionary
 //using the professor's name as the key. 
 
-//sends message to background script to activate extension icon
-chrome.runtime.sendMessage({type:'showPageAction'});
-console.log("RMP extension activated.");
-
 //create/clear storage dictionary for professors on every refresh
 var storage_dict = {};
 console.log('Empty storage dictionary created.')
