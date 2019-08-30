@@ -247,6 +247,8 @@ function get_description() {
     else {
         console.log(prof1 + ' not found in storage.')
         var teacher_name = names_formatted[0] + '+' + names_formatted[1]; //search query for teacher name
+        //note: the cors-anywhere allows us to make a request to rmp which would otherwise be blocked
+        //cors-anywhere is a NodeJS proxy that adds CORS headers to proxied request
         var search_url = 'https://cors-anywhere.herokuapp.com/http://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=' + campus_name + '&queryoption=HEADER&query=' + teacher_name + '&facetSearch=true';
         get_search(search_url, prof1, campus_initial);
     }
