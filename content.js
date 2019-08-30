@@ -5,7 +5,10 @@
 //professor's name as the key.
 //If not in dictionary, use professor name and campus to get the url of the search 
 //and make a request to find the teacher id.
-//Next, get the url of the statistics page using the teacher id and make a request to get the ratings.
+//Note: this is necessary since RMP does not have a public API so we must
+//use the professor name/campus as a search query and get the unique teacher id 
+//and then find the teacher id from the search results page.
+//Next, get the url of the professor's page using the teacher id and make a request to get the ratings.
 //Finally, insert the gained ratings into the popup that appears when users click on the injected button.
 //Store the div containing the ratings and graphics pertaining to the professor in the storage dictionary
 //using the professor's name as the key. 
@@ -82,7 +85,7 @@ function inject_cell(){
     container.id = 'popup_box';
     create_popup(container);
     
-    //injection        
+    //injection into course description box
     var description_box = document.getElementById('course-description-box');
     description_box.prepend(container);
     description_box.prepend(document.createElement('hr'));
@@ -273,7 +276,7 @@ function get_search(search_url, prof1, campus_initial) {
                 storage_dict[prof1] = document.getElementById('popup_box');
                 console.log(prof1 + ' added to storage.');
             }
-            //take the first professor in search results 
+            //take the first professor in search results (accurate since professor name and school matched)
             else{
                 var prof_id = prof_list[0].getElementsByTagName('a')[0].getAttribute('href');
                 user_url = page_url+prof_id
