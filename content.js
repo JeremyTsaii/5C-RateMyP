@@ -95,6 +95,7 @@ function inject_cell(){
     //in case of course description text overflow due to button injection
     var description_container = document.getElementById('course-description-box-outer');
     description_container.style.height = 'auto';
+    description_container.style.overflow = 'visible';
 
     //center popup 
     var parent = document.getElementById('course-description-box');
