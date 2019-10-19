@@ -231,7 +231,7 @@ function get_description() {
     names_formatted.push(names_initial[0].trim());
     prof1 = "Prof. " + names_formatted[0] + ' ' + names_formatted[1];
 
-    //if prof_name already within storage_dict, take from Chrome.Storage and override current popup
+    //if prof_name already within storage_dict, take from storage dictionary and override current popup
     console.log('Checking storage for ' + prof1 + '.');
     if (prof1 in storage_dict) {
         //remove current popup
