@@ -18,12 +18,11 @@ var storage_dict = {};
 console.log('Empty storage dictionary created.')
 
 //load css 
-var head = document.getElementsByTagName('HEAD')[0];  
-var link = document.createElement('link'); 
-link.rel = 'stylesheet';  
-link.type = 'text/css'; 
-link.href = 'main.css'; 
-head.appendChild(link); 
+var head = document.getElementsByTagName('HEAD')[0];
+var link = document.createElement('link');
+link.rel = 'stylesheet';
+link.type = 'text/css';
+head.appendChild(link);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //--------------------------------------Event Listeners------------------------------------------------
@@ -250,14 +249,14 @@ function get_description() {
         var teacher_name = names_formatted[0] + '+' + names_formatted[1]; //search query for teacher name
         //note: the cors-anywhere allows us to make a request to rmp which would otherwise be blocked
         //cors-anywhere is a NodeJS proxy that adds CORS headers to proxied request
-        var search_url = 'https://cors-anywhere.herokuapp.com/http://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=' + campus_name + '&queryoption=HEADER&query=' + teacher_name + '&facetSearch=true';
+        var search_url = 'https://desolate-bayou-64200.herokuapp.com/https://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=' + campus_name + '&queryoption=HEADER&query=' + teacher_name + '&facetSearch=true';
         get_search(search_url, prof1, campus_initial);
     }
 }
 
 //check if professor has page and ratings on rmp using request
 function get_search(search_url, prof1, campus_initial) {
-    var proxy_url = 'https://cors-anywhere.herokuapp.com/'
+    var proxy_url = 'https://desolate-bayou-64200.herokuapp.com/'
     var page_url = 'https://www.ratemyprofessors.com' //before appending teacher id
     var search_request = new XMLHttpRequest();
 	search_request.onreadystatechange = function(){
