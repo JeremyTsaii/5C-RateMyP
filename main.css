@@ -46,16 +46,10 @@
   }
 
 /*loading bar divs*/
-#progress {
-  width: 100%;
-  color: grey;
-}
-
 #loading_bar {
-  border-color: #ffffff;
-  background-color: grey;
+  background-color: #f065cf;
   text-align: center;
-  height: 100%;
+  height: 15%;
   }
 
 /*general formatting of rating divs*/
@@ -155,7 +149,7 @@
   }
 
 #again_bar {
-    color: green;
+    color: grey;
     text-align: right;
     padding-top: 4px;
     padding-bottom: 2px; 

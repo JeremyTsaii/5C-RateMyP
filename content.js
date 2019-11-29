@@ -138,8 +138,6 @@ function create_popup(container) {
     popup_again.id = 'popup_again';
     popup_again.className = 'popuptext';
     // Loading bar occupies same place as take-again% while loading
-    var progress = document.createElement('div');
-    progress.id = 'progress';
     var loading_bar = document.createElement('div');
     loading_bar.id = 'loading_bar';
     loading_bar.innerText = 'Loading: 50%';
@@ -206,13 +204,15 @@ function get_description() {
     }
 
     // Set campus name according to campus_initial
-    classify_campus(campus_initial, campus_name);
+    var found = classify_campus(campus_initial, campus_name);
 
     // Second check for campus name according to campus initials found in time slot row
-    var arr = time_info.innerText.split(' ');
-    if (arr.length >= 8) { // If present, 8th character is campus initial
-        campus_initial.str = arr[7];
-        classify_campus(campus_initial, campus_name)
+    if (!found) {
+        var arr = time_info.innerText.split(' ');
+        if (arr.length >= 8) { // If present, 8th character is campus initial
+            campus_initial.str = arr[7];
+            classify_campus(campus_initial, campus_name)
+        }
     }
 
     // Case with extra rows in description box due to multiple meeting locations/times (rows usually 12)
@@ -286,18 +286,25 @@ function classify_campus(campus_initial, campus_name) {
     if (campus_initial.str == 'PO') {
         campus_name.str = 'Pomona+College';
         campus_initial.str = 'Pomona College';
+        return true;
     } else if (campus_initial.str == 'HM') {
         campus_name.str = 'Harvey+Mudd+College';
         campus_initial.str = 'Harvey Mudd College';
+        return true;
     } else if (campus_initial.str == 'PZ') {
         campus_name.str = 'Pitzer+College';
         campus_initial.str = 'Pitzer College';
+        return true;
     } else if (campus_initial.str == 'SC') {
         campus_name.str = 'Scripps+College';
         campus_initial.str = 'Scripps College';
+        return true;
     } else if (campus_initial.str == 'CM') {
         campus_name.str = 'Claremont+McKenna+College'
         campus_initial.str = 'Claremont McKenna College';
+        return true;
+    } else {
+        return false;
     }
 }
 
