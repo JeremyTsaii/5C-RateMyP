@@ -200,6 +200,10 @@ function get_description() {
     if (course_code == 'PE') {
         document.getElementById('popup_again').style.textAlign = 'center';
         document.getElementById('popup_again').innerText = 'This is a P.E. class! No results from RMP.';
+
+        
+        // Update boolean variable
+        request_open = false;
         return;
     }
 
@@ -229,6 +233,10 @@ function get_description() {
         var message = 'This is a course taught by Staff so there are no reviews.';
         document.getElementById('popup_again').style.textAlign = 'center';
         document.getElementById('popup_again').innerText = message;
+
+        
+        // Update boolean variable
+        request_open = false;
         return;
     }
     console.log(class_info.innerText);
@@ -261,6 +269,10 @@ function get_description() {
         var anchor = document.getElementById('rmp-button').nextSibling.nextSibling; // Reference point for insertion
         anchor.parentNode.insertBefore(new_child, anchor);
         console.log(prof1 + ' found and retrieved from storage.');
+
+        
+        // Update boolean variable
+        request_open = false;
         }
     // If prof_name not in storage, gather information from rmp search page using professor and campus name
     else {
@@ -536,8 +548,9 @@ function open_box() {
     else {
         // If request still being processed, do not open window
         if (!request_open) {
-        // Indicate popup is open
+        // Indicate popup and request are open
         popup_open = true;
+        request_open = true;
 
         // Get information and display
         setTimeout(get_description, 1000);
