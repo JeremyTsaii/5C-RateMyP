@@ -137,8 +137,14 @@ function create_popup(container) {
     var popup_again = document.createElement('div');
     popup_again.id = 'popup_again';
     popup_again.className = 'popuptext';
-    popup_again.style.textAlign = 'center';
-    popup_again.innerText = 'Loading... (~3 Seconds)';
+    // Loading bar occupies same place as take-again% while loading
+    var progress = document.createElement('div');
+    progress.id = 'progress';
+    var loading_bar = document.createElement('div');
+    loading_bar.id = 'loading_bar';
+    loading_bar.innerText = 'Loading: 50%';
+    loading_bar.style.width = '50%';
+    popup_again.appendChild(loading_bar);
     container.appendChild(popup_again);
 
     var again_graphic = document.createElement('div');
@@ -162,16 +168,35 @@ function create_popup(container) {
     container.appendChild(popup_link);
 }
 
+// Increment loading bar
+function move_loading(bar, start_percent, end_percent) {
+    var move = setInterval(frame, 10);
+    function frame() {
+        if (start_percent >= end_percent) {
+            return;
+        } else {
+            start_percent++;
+            bar.style.width = start_percent + '%';
+            bar.innerText = "Loading: " + bar.style.width;
+        }
+    }
+}
+
 // Obtains professor and class information 
 function get_description() {
     // Get information from description box on hyperschedule
     var description_box = document.getElementById('course-description-box');
     var rows = description_box.children.length;
     var class_info = description_box.firstChild.nextSibling.nextSibling.nextSibling;
+    var time_info = class_info.nextSibling.nextSibling;
     var course_code = class_info.innerText.split(' ')[0];
-    var campus_initial = class_info.innerText.split(' ')[2].slice(0,2);
+    var campus_initial = { str: class_info.innerText.split(' ')[2].slice(0,2)}; // Wrap so we can pass by reference and change string
     var prof_name = class_info.nextSibling.nextSibling.nextSibling.nextSibling;
-    var campus_name = '';
+    var campus_name = { str: ''}; // Wrap so we can pass by reference and change string
+
+    // Update loading bar
+    var bar = document.getElementById('loading_bar');
+    move_loading(bar, 50, 51);
 
     // If PE class, do not get information from RMP
     if (course_code == 'PE') {
@@ -179,32 +204,25 @@ function get_description() {
         document.getElementById('popup_again').innerText = 'This is a P.E. class! No results from RMP.';
         return;
     }
-    // Set campus name according to campus initials found in course
-    if (campus_initial == 'PO') {
-        campus_name = 'Pomona+College';
-        campus_initial = 'Pomona College';
+
+    // Set campus name according to campus_initial
+    classify_campus(campus_initial, campus_name);
+
+    // Second check for campus name according to campus initials found in time slot row
+    var arr = time_info.innerText.split(' ');
+    if (arr.length >= 8) { // If present, 8th character is campus initial
+        campus_initial.str = arr[7];
+        classify_campus(campus_initial, campus_name)
     }
-    else if (campus_initial == 'HM') {
-        campus_name = 'Harvey+Mudd+College';
-        campus_initial = 'Harvey Mudd College';
-    }
-    else if (campus_initial == 'PZ') {
-        campus_name = 'Pitzer+College';
-        campus_initial = 'Pitzer College';
-    }
-    else if (campus_initial == 'SC') {
-        campus_name = 'Scripps+College';
-        campus_initial = 'Scripps College';
-    }
-    else if (campus_initial == 'CM') {
-        campus_name = 'Claremont+McKenna+College'
-        campus_initial = 'Claremont McKenna College';
-    }
-    
+
     // Case with extra rows in description box due to multiple meeting locations/times (rows usually 12)
     for (i = 0; i < rows - 14; i++) {
         prof_name = prof_name.nextSibling;
     }
+
+    // Update loading bar
+    var bar = document.getElementById('loading_bar');
+    move_loading(bar, 53, 55);
 
     // Check if prof name is staff (no ratings then)
     if (prof_name.innerText == 'Staff') {
@@ -217,7 +235,6 @@ function get_description() {
     console.log(prof_name.innerText);
 
     // Format and display professor information
-    var popup_title = document.getElementById('popup_title');
     var names_initial = prof_name.innerText.split(' and ').join(',').split(',');
     var names_formatted = [];
     var prof1 = ''; 
@@ -226,6 +243,11 @@ function get_description() {
     names_formatted.push(names_initial[1].trim().split(' ')[0]);
     names_formatted.push(names_initial[0].trim());
     prof1 = "Prof. " + names_formatted[0] + ' ' + names_formatted[1];
+
+
+    // Update loading bar
+    var bar = document.getElementById('loading_bar');
+    move_loading(bar, 55, 57);
 
     // If prof_name already within storage_dict, take from storage dictionary and override current popup
     console.log('Checking storage for ' + prof1 + '.');
@@ -244,11 +266,38 @@ function get_description() {
     else {
         console.log(prof1 + ' not found in storage.')
         var teacher_name = names_formatted[0] + '+' + names_formatted[1]; // Search query for teacher name
+
+        // Update loading bar
+        var bar = document.getElementById('loading_bar');
+        move_loading(bar, 57, 60);
+
         // Note: the cors-anywhere allows us to make a request to rmp which would otherwise be blocked
         // Cors-anywhere is a NodeJS proxy that adds CORS headers to proxied request
         request_open = true; // Request is being sent
-        var search_url = 'https://desolate-bayou-64200.herokuapp.com/https://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=' + campus_name + '&queryoption=HEADER&query=' + teacher_name + '&facetSearch=true';
+        var search_url = 'https://desolate-bayou-64200.herokuapp.com/https://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=' + campus_name.str + '&queryoption=HEADER&query=' + teacher_name + '&facetSearch=true';
+        console.log(search_url);
         get_search(search_url, prof1, campus_initial);
+    }
+}
+
+// Sets campus name given initials
+function classify_campus(campus_initial, campus_name) {
+    // Set campus name according to campus initials found in course
+    if (campus_initial.str == 'PO') {
+        campus_name.str = 'Pomona+College';
+        campus_initial.str = 'Pomona College';
+    } else if (campus_initial.str == 'HM') {
+        campus_name.str = 'Harvey+Mudd+College';
+        campus_initial.str = 'Harvey Mudd College';
+    } else if (campus_initial.str == 'PZ') {
+        campus_name.str = 'Pitzer+College';
+        campus_initial.str = 'Pitzer College';
+    } else if (campus_initial.str == 'SC') {
+        campus_name.str = 'Scripps+College';
+        campus_initial.str = 'Scripps College';
+    } else if (campus_initial.str == 'CM') {
+        campus_name.str = 'Claremont+McKenna+College'
+        campus_initial.str = 'Claremont McKenna College';
     }
 }
 
@@ -264,12 +313,18 @@ function get_search(search_url, prof1, campus_initial) {
             search_div.innerHTML = search_request.responseText;
             var prof_list = search_div.getElementsByClassName('listing PROFESSOR');
 
+            // Update loading bar
+            var bar = document.getElementById('loading_bar');
+            move_loading(bar, 60, 69);
+
+
             // Case where no professor found
             if (prof_list.length==0) {
-                var message = 'Sorry, there does not appear to be a ' + prof1 + ' at ' + campus_initial + ' within RMP.';
+                var message = 'Sorry, there does not appear to be a ' + prof1 + ' at ' + campus_initial.str + ' within RMP. Perhaps they are new at ' + campus_initial.str + ' and have ratings at another school.';
                 document.getElementById('popup_again').style.textAlign = 'center';
                 document.getElementById('popup_again').innerText = message;
                 document.getElementById('popup_title').innerText = 'No Results Found.'
+                alternate_search(prof1);
                 console.log('Professor not found on RMP.');
 
                 // Add popup div to storage_dict
@@ -297,68 +352,96 @@ function get_search(search_url, prof1, campus_initial) {
 function get_prof(page_url, user_url, prof1, campus_initial) {
     var prof_request = new XMLHttpRequest();
 	prof_request.onreadystatechange = function(){
-		if (prof_request.readyState == 4 && prof_request.status == 200){
-            // Insert response.text into a div so we can search for elements within
-            var prof_div = document.createElement('div');
-            prof_div.innerHTML = prof_request.responseText;
+		if (prof_request.readyState == 4) {
+            if (prof_request.status == 200) {
+                // Insert response.text into a div so we can search for elements within
+                var prof_div = document.createElement('div');
+                prof_div.innerHTML = prof_request.responseText;
 
-            // Case where professor has a page but it has no ratings
-            var check_empty = prof_div.getElementsByClassName('headline');
-            if (check_empty.length>0) {
-                var message = 'It appears ' + prof1 + ' at ' + campus_initial + ' has a page within RMP but has no reviews yet.';
+                // Case where professor has a page but it has no ratings
+                var check_empty = prof_div.getElementsByClassName('headline');
+                if (check_empty.length>0) {
+                    var message = 'It appears ' + prof1 + ' at ' + campus_initial.str + ' has a page within RMP but has no reviews yet. Perhaps they are new at ' + campus_initial.str + ' and have ratings at another school.';
+                    document.getElementById('popup_again').style.textAlign = 'center';
+                    document.getElementById('popup_again').innerText = message;
+                    document.getElementById('popup_title').innerText = 'No Results Found.'
+                    alternate_search(prof1);
+                    console.log('Prof has page on RMP but no ratings');
+                }
+                // Professor has a page with ratings
+                else {
+                    var ratings = prof_div.getElementsByClassName('grade');
+                    var num_ratings = prof_div.getElementsByClassName('table-toggle rating-count active');
+                    var tag_list = prof_div.getElementsByClassName('tag-box-choosetags');
+        
+                    // Format ratings
+                    var overall = 'Overall Rating: ' + ratings[0].innerText.trim() + '/5.0';
+                    var again = 'Take-Again Percentage: ' + ratings[1].innerText.trim();
+                    var difficulty = 'Difficulty: ' + ratings[2].innerText.trim() + '/5.0';
+                    var num = num_ratings[0].innerText.trim();
+                    var tags = 'No tags available.';
+                    if (tag_list.length >= 1) {
+                        tags = 'Top Tag: ' + tag_list[0].innerText;
+                    }
+
+                    // Append link to popup_link div
+                    var anchor = document.createElement('a');
+                    anchor.id = 'anchor_link';
+                    anchor.target = '_blank';
+                    anchor.rel = 'noopener noreferrer';
+                    anchor.href = user_url;
+                    document.getElementById('popup_link').appendChild(anchor);
+                    
+                    // Insert ratings into popup
+                    document.getElementById('popup_title').innerText = prof1 + ':';
+                    document.getElementById('popup_overall').innerText = overall;
+                    document.getElementById('popup_difficulty').innerText = difficulty;
+                    document.getElementById('popup_again').style.textAlign = 'left';
+                    document.getElementById('popup_again').innerText = again;
+                    document.getElementById('popup_tags').innerText = tags;
+                    document.getElementById('popup_num').innerText = num;
+                    document.getElementById('anchor_link').innerText = 'Click for full RMP ratings.';
+        
+                    // Change popup backgrounds for graphic and link rows
+                    change_backgrounds();
+        
+                    // Change the percent bar color according to inputted ratings
+                    update_graphics(ratings[0].innerText.trim(), ratings[2].innerText.trim(), ratings[1].innerText.trim());
+        
+                    // Add popup div to storage_dict
+                    storage_dict[prof1] = document.getElementById('popup_box');
+                    console.log(prof1 + ' added to storage.'); 
+                }   
+            } else { // For some reason, error 404 is returned when prof has page but no ratings
+                var message = 'It appears ' + prof1 + ' at ' + campus_initial.str + ' has a page within RMP but has no reviews yet. Perhaps they are new at ' + campus_initial.str + ' and have ratings at another school.';
                 document.getElementById('popup_again').style.textAlign = 'center';
                 document.getElementById('popup_again').innerText = message;
+                document.getElementById('popup_title').innerText = 'No Results Found.'
+                alternate_search(prof1);
+                console.log('Prof has page on RMP but no ratings');
             }
-            // Professor has a page with ratings
-            else {
-                var ratings = prof_div.getElementsByClassName('grade');
-                var num_ratings = prof_div.getElementsByClassName('table-toggle rating-count active');
-                var tag_list = prof_div.getElementsByClassName('tag-box-choosetags');
-    
-                // Format ratings
-                var overall = 'Overall Rating: ' + ratings[0].innerText.trim() + '/5.0';
-                var again = 'Take-Again Percentage: ' + ratings[1].innerText.trim();
-                var difficulty = 'Difficulty: ' + ratings[2].innerText.trim() + '/5.0';
-                var num = num_ratings[0].innerText.trim();
-                var tags = 'No tags available.';
-                if (tag_list.length >= 1) {
-                    tags = 'Top Tag: ' + tag_list[0].innerText;
-                }
-                
-                // Append link to popup_link div
-                var anchor = document.createElement('a');
-                anchor.id = 'anchor_link';
-                anchor.target = '_blank';
-                anchor.rel = 'noopener noreferrer';
-                anchor.href = user_url;
-                document.getElementById('popup_link').appendChild(anchor);
-                
-                // Insert ratings into popup
-                document.getElementById('popup_title').innerText = prof1 + ':';
-                document.getElementById('popup_overall').innerText = overall;
-                document.getElementById('popup_difficulty').innerText = difficulty;
-                document.getElementById('popup_again').style.textAlign = 'left';
-                document.getElementById('popup_again').innerText = again;
-                document.getElementById('popup_tags').innerText = tags;
-                document.getElementById('popup_num').innerText = num;
-                document.getElementById('anchor_link').innerText = 'Click for full RMP ratings.';
-    
-                // Change popup backgrounds for graphic and link rows
-                change_backgrounds();
-    
-                // Change the percent bar color according to inputted ratings
-                update_graphics(ratings[0].innerText.trim(), ratings[2].innerText.trim(), ratings[1].innerText.trim());
-    
-                // Add popup div to storage_dict
-                storage_dict[prof1] = document.getElementById('popup_box');
-                console.log(prof1 + ' added to storage.'); 
-            }
-            // Update boolean variable
-            request_open = false;                   
-		}
+        }
+        // Update boolean variable
+        request_open = false;   
     }
     prof_request.open("GET", page_url, true);
     prof_request.send();
+}
+
+// Append link to popup_link div with search of only professor name
+// Called when professor has no ratings or a page with no ratings at specific school
+function alternate_search(prof) {
+    var anchor = document.createElement('a');
+    anchor.id = 'anchor_link';
+    anchor.target = '_blank';
+    anchor.rel = 'noopener noreferrer';
+    var names = prof.split(' ');
+    var first_name = names[1];
+    var last_name = names[2];
+    anchor.href = 'https://www.ratemyprofessors.com/search.jsp?query=' + first_name + '+' + last_name;
+    document.getElementById('popup_link').appendChild(anchor);
+    document.getElementById('anchor_link').innerText = 'Search for professor at all schools.';
+    document.getElementById('popup_link').style.backgroundColor = 'linear-gradient(rgba(0,0,0,.9), rgba(0,0,0,0.9))';
 }
 
 // Change the percent bar color according to inputted ratings
@@ -380,7 +463,6 @@ function update_graphics(overall, difficulty, again) {
     document.getElementById('difficulty_graphic').appendChild(difficulty_bar);
 
     var again_bar = document.createElement('div');
-    var again_percent = again;
     again_bar.id = 'again_bar';
     // Case where there is an actual percent 
     if (again != 'N/A') {

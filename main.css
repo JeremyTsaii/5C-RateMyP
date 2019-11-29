@@ -1,5 +1,5 @@
 /*button styling*/
-#rmp-button {
+  #rmp-button {
     border: 1px solid transparent;
     color: white;
     border-color: #d966ff;
@@ -8,16 +8,16 @@
     cursor: pointer;
     padding: 4px;
     transition: all 1s;
-}
+  }
 
-#rmp-button:hover {
+  #rmp-button:hover {
     background-color: #1ddea1;
     border-color:  #1ddea1;
-}
+  }
 
 /*rating box styling*/
 /*container*/
-.popup {
+  .popup {
     visibility: hidden;
     display: inline-block;
     background-image: linear-gradient(rgba(0,0,0,.6), rgba(0,0,0,0.6));
@@ -34,7 +34,7 @@
   }
 
 /*arrow pointing to container*/
-.popup::before {
+  .popup::before {
     content: "";
     position: absolute;
     bottom: 100%;
@@ -45,36 +45,49 @@
     transform: rotate(180deg);
   }
 
-  /*general formatting of rating divs*/
-  .popup_text {
+/*loading bar divs*/
+#progress {
+  width: 100%;
+  color: grey;
+}
+
+#loading_bar {
+  border-color: #ffffff;
+  background-color: grey;
+  text-align: center;
+  height: 100%;
+  }
+
+/*general formatting of rating divs*/
+.popup_text {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
     z-index: 1;
-  }
+}
   
-  /*specific formatting of rating divs*/
-  #popup_title {
+/*specific formatting of rating divs*/
+#popup_title {
     width: 100%;
     height: 10%;
     top: 0%;
-  }
+}
 
-  #popup_overall {
+#popup_overall {
     width: 100%;
     height: 10%;
     top: 10%;
     text-align: left;
     padding-top: 5px;
-  }
+}
 
-  #overall_graphic {
+#overall_graphic {
     width: 100%;
     height: 10%;
     top: 20%;
   }
 
-  #popup_difficulty {
+#popup_difficulty {
     width: 100%;
     height: 10%;
     top: 30%;
@@ -82,13 +95,13 @@
     padding-top: 5px;
   }
 
-  #difficulty_graphic {
+#difficulty_graphic {
     width: 100%;
     height: 10%;
     top: 40%;
   }
 
-  #popup_again {
+#popup_again {
     width: 100%;
     height: 10%;
     top: 50%;
@@ -96,13 +109,13 @@
     padding-top: 5px;
   }
 
-  #again_graphic {
+#again_graphic {
     width: 100%;
     height: 10%;
     top: 60%;
   }
 
-  #popup_tags {
+#popup_tags {
     width: 100%;
     height: 10%;
     top: 70%;
@@ -110,20 +123,20 @@
     padding-top: 5px;
   }
 
-  #popup_num {
+#popup_num {
     width: 100%;
     height: 10%;
     top: 80%;
   }
 
-  #popup_link {
+#popup_link {
     width: 100%;
     height: 10%;
     top: 90%;
   }
 
-  /*progress bar divs*/
-  #overall_bar {
+/*progress bar divs*/
+#overall_bar {
     color: grey;
     text-align: right;
     padding-top: 4px;
@@ -132,7 +145,7 @@
     height: 100%;
   }
 
-  #difficulty_bar {
+#difficulty_bar {
     color: grey;
     text-align: right;
     padding-top: 4px;
@@ -141,8 +154,8 @@
     height: 100%;
   }
 
-  #again_bar {
-    color: grey;
+#again_bar {
+    color: green;
     text-align: right;
     padding-top: 4px;
     padding-bottom: 2px; 
@@ -150,18 +163,18 @@
     height: 100%;
   }
 
-  /*link color at bottom of box*/
-  #anchor_link {
+/*link color at bottom of box*/
+#anchor_link {
     color: #7CFFDC;
   }
 
-  /*toggle popup class when clicking on the button*/
-  .show {
+/*toggle popup class when clicking on the button*/
+.show {
     visibility: visible;
     animation: fadeIn 1s;
   }
 
-  /*animation for popup*/
+/*animation for popup*/
   @keyframes fadeIn {
     from {opacity: 0;}
     to {opacity:1 ;}
