@@ -200,7 +200,6 @@ function get_description() {
     if (course_code == 'PE') {
         document.getElementById('popup_again').style.textAlign = 'center';
         document.getElementById('popup_again').innerText = 'This is a P.E. class! No results from RMP.';
-
         
         // Update boolean variable
         request_open = false;
@@ -233,7 +232,6 @@ function get_description() {
         var message = 'This is a course taught by Staff so there are no reviews.';
         document.getElementById('popup_again').style.textAlign = 'center';
         document.getElementById('popup_again').innerText = message;
-
         
         // Update boolean variable
         request_open = false;
@@ -262,6 +260,7 @@ function get_description() {
         // Remove current popup
         var old_child = document.getElementById('popup_box');
         old_child.parentNode.removeChild(old_child);
+
         // Append retrieved popup into correct position
         var new_child = storage_dict[prof1];
         new_child.className = 'popup show';
@@ -271,9 +270,7 @@ function get_description() {
 
         // Update boolean variable
         request_open = false;
-        }
-    // If prof_name not in storage, gather information from rmp search page using professor and campus name
-    else {
+    } else { // If prof_name not in storage, gather information from rmp search page using professor and campus name
         console.log(prof1 + ' not found in storage.')
         var teacher_name = '';
         // Prof. Benjamin (legend) edge case
@@ -319,7 +316,7 @@ function classify_campus(campus_initial, campus_name) {
         campus_name.str = 'Claremont+McKenna+College'
         campus_initial.str = 'Claremont McKenna College';
         return true;
-    } else {
+    } else { // Campus name not found
         return false;
     }
 }
@@ -340,7 +337,6 @@ function get_search(search_url, prof1, campus_initial) {
             var bar = document.getElementById('loading_bar');
             move_loading(bar, 60, 69);
 
-
             // Case where no professor found
             if (prof_list.length==0) {
                 var message = 'Sorry, there does not appear to be a ' + prof1 + ' at ' + campus_initial.str + ' within RMP. Perhaps they are new at ' + campus_initial.str + ' and have ratings at another school.';
@@ -356,9 +352,7 @@ function get_search(search_url, prof1, campus_initial) {
 
                 // Update boolean variable
                 request_open = false;
-            }
-            // Take the first professor in search results (accurate since professor name and school matched)
-            else{
+            } else{ // Take the first professor in search results (accurate since professor name and school matched)
                 var prof_id = prof_list[0].getElementsByTagName('a')[0].getAttribute('href');
                 user_url = page_url+prof_id
                 page_url = proxy_url + user_url;
@@ -390,9 +384,7 @@ function get_prof(page_url, user_url, prof1, campus_initial) {
                     document.getElementById('popup_title').innerText = 'No Results Found.'
                     alternate_search(prof1);
                     console.log('Prof has page on RMP but no ratings');
-                }
-                // Professor has a page with ratings
-                else {
+                } else { // Professor has a page with ratings
                     var ratings = prof_div.getElementsByClassName('grade');
                     var num_ratings = prof_div.getElementsByClassName('table-toggle rating-count active');
                     var tag_list = prof_div.getElementsByClassName('tag-box-choosetags');
@@ -403,7 +395,7 @@ function get_prof(page_url, user_url, prof1, campus_initial) {
                     var difficulty = 'Difficulty: ' + ratings[2].innerText.trim() + '/5.0';
                     var num = num_ratings[0].innerText.trim();
                     var tags = 'No tags available.';
-                    if (tag_list.length >= 1) {
+                    if (tag_list.length >= 1) { // Top tag exists
                         tags = 'Top Tag: ' + tag_list[0].innerText;
                     }
 
@@ -503,28 +495,21 @@ function color(bar, type) {
     if (type == 'normal'){
         if (percent>=80) {
             bar.style.backgroundColor = '#1BFF70';
-        }
-        else if (percent>=60) {
+        } else if (percent>=60) {
             bar.style.backgroundColor = '#DAFF1B';
-        }
-        else if (percent>=40) {
+        } else if (percent>=40) {
             bar.style.backgroundColor = '#FF901B';
-        }
-        else {
+        } else {
             bar.style.backgroundColor = '#FF1B1B'
         }
-    }
-    else if (type == 'inverse') {
+    } else if (type == 'inverse') {
         if (percent<=40) {
             bar.style.backgroundColor = '#1BFF70';
-        }
-        else if (percent<=60){
+        } else if (percent<=60){
             bar.style.backgroundColor = '#DAFF1B';
-        }
-        else if (percent<=80) {
+        } else if (percent<=80) {
             bar.style.backgroundColor = '#FF901B';
-        }
-        else {
+        } else {
             bar.style.backgroundColor = '#FF1B1B';
         }
     }
@@ -548,8 +533,7 @@ function open_box() {
         
         // Indicate popup is closed
         popup_open = false;
-    }
-    else {
+    } else {
         // If request still being processed, do not open window
         if (!request_open) {
         // Indicate popup and request are open
