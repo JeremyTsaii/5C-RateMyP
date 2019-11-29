@@ -252,7 +252,6 @@ function get_description() {
     names_formatted.push(names_initial[0].trim());
     prof1 = "Prof. " + names_formatted[0] + ' ' + names_formatted[1];
 
-
     // Update loading bar
     var bar = document.getElementById('loading_bar');
     move_loading(bar, 55, 57);
@@ -270,14 +269,19 @@ function get_description() {
         anchor.parentNode.insertBefore(new_child, anchor);
         console.log(prof1 + ' found and retrieved from storage.');
 
-        
         // Update boolean variable
         request_open = false;
         }
     // If prof_name not in storage, gather information from rmp search page using professor and campus name
     else {
         console.log(prof1 + ' not found in storage.')
-        var teacher_name = names_formatted[0] + '+' + names_formatted[1]; // Search query for teacher name
+        var teacher_name = '';
+        // Prof. Benjamin (legend) edge case
+        if (prof1 == 'Prof. Arthur Benjamin') {
+            teacher_name = 'Art+Benjamin'
+        } else {
+            teacher_name = names_formatted[0] + '+' + names_formatted[1]; // Search query for teacher name
+        }
 
         // Update loading bar
         var bar = document.getElementById('loading_bar');
