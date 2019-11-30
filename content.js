@@ -228,7 +228,7 @@ function get_description() {
     move_loading(bar, 53, 55);
 
     // Check if prof name is staff (no ratings then)
-    if (prof_name.innerText == 'Staff') {
+    if (prof_name.innerText.slice(0, 5) == 'Staff' || prof_name.innerText == 'Staff') {
         var message = 'This is a course taught by Staff so there are no reviews.';
         document.getElementById('popup_again').style.textAlign = 'center';
         document.getElementById('popup_again').innerText = message;
