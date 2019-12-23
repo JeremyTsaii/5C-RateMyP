@@ -43,7 +43,6 @@ course_search.addEventListener('click', function(e) {
         inject_cell();
         if(popup_open) {
             popup_open = false;
-            console.log('Popup box closed.')
         }
     }
 });
@@ -54,7 +53,6 @@ selected_courses.addEventListener('click', function(e) {
         inject_cell();
         if(popup_open) {
             popup_open = false;
-            console.log('Popup box closed.')
         }
     }
 });
@@ -65,7 +63,6 @@ table.addEventListener('click', function(e) {
         inject_cell();
         if(popup_open) {
             popup_open = false;
-            console.log('Popup box closed.')
         }
     }
 });
@@ -92,7 +89,6 @@ function inject_cell(){
     description_box.prepend(container);
     description_box.prepend(document.createElement('hr'));
     description_box.prepend(button);
-    console.log('Button injected.');
     
     // In case of course description text overflow due to button injection
     var description_container = document.getElementById('course-description-box-outer');
@@ -273,9 +269,9 @@ function get_description() {
     } else { // If prof_name not in storage, gather information from rmp search page using professor and campus name
         console.log(prof1 + ' not found in storage.')
         var teacher_name = '';
-        // Prof. Benjamin (legend) edge case
+        // Prof. Benjamin edge case (perhaps more to be added in future)
         if (prof1 == 'Prof. Arthur Benjamin') {
-            teacher_name = 'Art+Benjamin'
+            teacher_name = 'Art+Benjamin';
         } else {
             teacher_name = names_formatted[0] + '+' + names_formatted[1]; // Search query for teacher name
         }
@@ -287,7 +283,7 @@ function get_description() {
         // Note: the cors-anywhere allows us to make a request to rmp which would otherwise be blocked
         // Cors-anywhere is a NodeJS proxy that adds CORS headers to proxied request
         request_open = true; // Request is being sent
-        var search_url = 'https://desolate-bayou-64200.herokuapp.com/https://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=' + campus_name.str + '&queryoption=HEADER&query=' + teacher_name + '&facetSearch=true';
+        var search_url = 'https://ratemyp-reverse-proxy-server.herokuapp.com/https://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=' + campus_name.str + '&queryoption=HEADER&query=' + teacher_name + '&facetSearch=true';
         get_search(search_url, prof1, campus_initial);
     }
 }
@@ -322,45 +318,54 @@ function classify_campus(campus_initial, campus_name) {
 
 // Check if professor has page and ratings on rmp using request
 function get_search(search_url, prof1, campus_initial) {
-    var proxy_url = 'https://desolate-bayou-64200.herokuapp.com/' // Node.js server hosted on Heroku
+    var proxy_url = 'https://ratemyp-reverse-proxy-server.herokuapp.com/' // Node.js server hosted on Heroku
     var page_url = 'https://www.ratemyprofessors.com' // Before appending teacher id
     var search_request = new XMLHttpRequest();
 	search_request.onreadystatechange = function(){
-		if (search_request.readyState == 4 && search_request.status == 200){
-            // Insert response.text into a div so we can search for elements within
-            var search_div = document.createElement('div');
-            search_div.innerHTML = search_request.responseText;
-            var prof_list = search_div.getElementsByClassName('listing PROFESSOR');
+		if (search_request.readyState == 4) {
+            if (search_request.status == 200) {
+                // Insert response.text into a div so we can search for elements within
+                var search_div = document.createElement('div');
+                search_div.innerHTML = search_request.responseText;
+                var prof_list = search_div.getElementsByClassName('listing PROFESSOR');
 
-            // Update loading bar
-            var bar = document.getElementById('loading_bar');
-            move_loading(bar, 60, 69);
+                // Update loading bar
+                var bar = document.getElementById('loading_bar');
+                move_loading(bar, 60, 69);
 
-            // Case where no professor found
-            if (prof_list.length==0) {
-                var message = 'Sorry, there does not appear to be a ' + prof1 + ' at ' + campus_initial.str + ' within RMP. Perhaps they are new at ' + campus_initial.str + ' and have ratings at another school.';
+                // Case where no professor found
+                if (prof_list.length==0) {
+                    var message = 'Sorry, there does not appear to be a ' + prof1 + ' at ' + campus_initial.str + ' within RMP. Perhaps they are new at ' + campus_initial.str + ' and have ratings at another school.';
+                    document.getElementById('popup_again').style.textAlign = 'center';
+                    document.getElementById('popup_again').innerText = message;
+                    document.getElementById('popup_title').innerText = 'No Results Found.'
+                    alternate_search(prof1, 'No professor');
+                    console.log('Professor not found on RMP.');
+
+                    // Add popup div to storage_dict
+                    storage_dict[prof1] = document.getElementById('popup_box');
+                    console.log(prof1 + ' added to storage.');
+
+                    // Update boolean variable
+                    request_open = false;
+                } else{ // Take the first professor in search results (accurate since professor name and school matched)
+                    var prof_id = prof_list[0].getElementsByTagName('a')[0].getAttribute('href');
+                    user_url = page_url + prof_id
+                    page_url = proxy_url + user_url;
+                    setTimeout( function() {get_prof(page_url, user_url, prof1, campus_initial);}, 1000);
+                    console.log('Professor found on RMP.')
+                }
+            } else { // Server is down
+                var message = 'Sorry, the server seems to be down at the moment. The development team is currently working on a fix.';
                 document.getElementById('popup_again').style.textAlign = 'center';
                 document.getElementById('popup_again').innerText = message;
-                document.getElementById('popup_title').innerText = 'No Results Found.'
-                alternate_search(prof1, "No professor");
-                console.log('Professor not found on RMP.');
-
-                // Add popup div to storage_dict
-                storage_dict[prof1] = document.getElementById('popup_box');
-                console.log(prof1 + ' added to storage.');
-
-                // Update boolean variable
-                request_open = false;
-            } else{ // Take the first professor in search results (accurate since professor name and school matched)
-                var prof_id = prof_list[0].getElementsByTagName('a')[0].getAttribute('href');
-                user_url = page_url + prof_id
-                page_url = proxy_url + user_url;
-                setTimeout( function() {get_prof(page_url, user_url, prof1, campus_initial);}, 1000);
-                console.log('Professor found on RMP.')
+                document.getElementById('popup_title').innerText = 'Server Error Occurred.'
+                alternate_search(prof1, "Server error");
+                console.log('Reverse proxy server is down');
             }
-		}
+        }
     }
-    search_request.open("GET", search_url, true);
+    search_request.open('GET', search_url, true);
     search_request.send();
 }
 
@@ -443,26 +448,29 @@ function get_prof(page_url, user_url, prof1, campus_initial) {
     prof_request.send();
 }
 
-// Append link to popup_link div with search of only professor name
+// Append link to popup_link div with search of only professor name or professor id
 // Called when professor has no ratings or a page with no ratings at specific school
 function alternate_search(prof, status, url) {
     var anchor = document.createElement('a');
+    // Create link that opens a new tab
     anchor.id = 'anchor_link';
     anchor.target = '_blank';
     anchor.rel = 'noopener noreferrer';
     document.getElementById('popup_link').appendChild(anchor);
     document.getElementById('popup_link').style.backgroundColor = 'linear-gradient(rgba(0,0,0,.9), rgba(0,0,0,0.9))';
+    var names = prof.split(' ');
+    var first_name = names[1];
+    var last_name = names[2];
 
     if (status == 'No professor' || status == 'No ratings') { // No professor found for specified school or page with no ratings
-        var names = prof.split(' ');
-        var first_name = names[1];
-        var last_name = names[2];
         anchor.href = 'https://www.ratemyprofessors.com/search.jsp?query=' + first_name + '+' + last_name;
         document.getElementById('anchor_link').innerText = 'Search for professor at all schools.';
+    } else if (status == 'Server error') { // Server down
+        anchor.href = 'https://www.ratemyprofessors.com/search.jsp?query=' + first_name + '+' + last_name;
+        document.getElementById('anchor_link').innerText = 'Manual search for professor on RMP.';
     } else { // Error occurred displaying information so provide link to teacher page
         anchor.href = url;
         document.getElementById('anchor_link').innerText = 'See stats for professor on RMP site.';
-        console.log("WTFFFF");
     }
 }
 
@@ -500,21 +508,21 @@ function update_graphics(overall, difficulty, again) {
 function color(bar, type) {
     var percent = Number(bar.style.width.substring(0, bar.style.width.length-1));
     if (type == 'normal'){
-        if (percent>=80) {
+        if (percent >= 80) {
             bar.style.backgroundColor = '#1BFF70';
-        } else if (percent>=60) {
+        } else if (percent >= 60) {
             bar.style.backgroundColor = '#DAFF1B';
-        } else if (percent>=40) {
+        } else if (percent >= 40) {
             bar.style.backgroundColor = '#FF901B';
         } else {
             bar.style.backgroundColor = '#FF1B1B'
         }
     } else if (type == 'inverse') {
-        if (percent<=40) {
+        if (percent <= 40) {
             bar.style.backgroundColor = '#1BFF70';
-        } else if (percent<=60){
+        } else if (percent <= 60){
             bar.style.backgroundColor = '#DAFF1B';
-        } else if (percent<=80) {
+        } else if (percent <= 80) {
             bar.style.backgroundColor = '#FF901B';
         } else {
             bar.style.backgroundColor = '#FF1B1B';
