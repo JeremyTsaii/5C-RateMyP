@@ -15,7 +15,6 @@
 
 // Create/clear storage dictionary for professors on every refresh
 var storage_dict = {};
-console.log('Empty storage dictionary created.')
 
 // Load css 
 var head = document.getElementsByTagName('HEAD')[0];
@@ -171,7 +170,7 @@ function move_loading(bar, start_percent, end_percent) {
         } else {
             start_percent++;
             bar.style.width = start_percent + '%';
-            bar.innerText = "Loading: " + bar.style.width;
+            bar.innerText = 'Loading: ' + bar.style.width;
         }
     }
 }
@@ -244,7 +243,7 @@ function get_description() {
     var prof3 = ''; // Currently only retrieve ratings of the first professor listed 
     names_formatted.push(names_initial[1].trim().split(' ')[0]);
     names_formatted.push(names_initial[0].trim());
-    prof1 = "Prof. " + names_formatted[0] + ' ' + names_formatted[1];
+    prof1 = 'Prof. ' + names_formatted[0] + ' ' + names_formatted[1];
 
     // Update loading bar
     var bar = document.getElementById('loading_bar');
@@ -360,8 +359,11 @@ function get_search(search_url, prof1, campus_initial) {
                 document.getElementById('popup_again').style.textAlign = 'center';
                 document.getElementById('popup_again').innerText = message;
                 document.getElementById('popup_title').innerText = 'Server Error Occurred.'
-                alternate_search(prof1, "Server error");
-                console.log('Reverse proxy server is down');
+                alternate_search(prof1, 'Server error');
+
+                // Update boolean variable
+                request_open = false;
+                console.log('Server is down.');
             }
         }
     }
@@ -436,7 +438,7 @@ function get_prof(page_url, user_url, prof1, campus_initial) {
                     document.getElementById('popup_again').style.textAlign = 'center';
                     document.getElementById('popup_again').innerText = message;
                     document.getElementById('popup_title').innerText = 'Data Error Occurred.'
-                    alternate_search(prof1, "Data error", user_url);
+                    alternate_search(prof1, 'Data error', user_url);
                     console.log('Professor not found on RMP.');
                 }
             }
@@ -444,7 +446,7 @@ function get_prof(page_url, user_url, prof1, campus_initial) {
         // Update boolean variable
         request_open = false; 
     }
-    prof_request.open("GET", page_url, true);
+    prof_request.open('GET', page_url, true);
     prof_request.send();
 }
 
@@ -544,7 +546,6 @@ function open_box() {
         // Close popup box
         var popup = document.getElementById('popup_box');
         popup.className = 'popup';
-        console.log('Popup box closed.');
         
         // Indicate popup is closed
         popup_open = false;
@@ -557,12 +558,10 @@ function open_box() {
 
         // Get information and display
         setTimeout(get_description, 1000);
-        console.log('Getting information from description.');
 
         // Open popup box
         var popup = document.getElementById('popup_box');
         popup.className = 'popup show';
-        console.log('Popup box opened.');
         }
     }
 }
