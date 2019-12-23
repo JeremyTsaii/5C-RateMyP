@@ -288,7 +288,6 @@ function get_description() {
         // Cors-anywhere is a NodeJS proxy that adds CORS headers to proxied request
         request_open = true; // Request is being sent
         var search_url = 'https://desolate-bayou-64200.herokuapp.com/https://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=' + campus_name.str + '&queryoption=HEADER&query=' + teacher_name + '&facetSearch=true';
-        console.log(search_url);
         get_search(search_url, prof1, campus_initial);
     }
 }
@@ -323,7 +322,7 @@ function classify_campus(campus_initial, campus_name) {
 
 // Check if professor has page and ratings on rmp using request
 function get_search(search_url, prof1, campus_initial) {
-    var proxy_url = 'https://desolate-bayou-64200.herokuapp.com/'
+    var proxy_url = 'https://desolate-bayou-64200.herokuapp.com/' // Node.js server hosted on Heroku
     var page_url = 'https://www.ratemyprofessors.com' // Before appending teacher id
     var search_request = new XMLHttpRequest();
 	search_request.onreadystatechange = function(){
@@ -343,7 +342,7 @@ function get_search(search_url, prof1, campus_initial) {
                 document.getElementById('popup_again').style.textAlign = 'center';
                 document.getElementById('popup_again').innerText = message;
                 document.getElementById('popup_title').innerText = 'No Results Found.'
-                alternate_search(prof1);
+                alternate_search(prof1, "No professor");
                 console.log('Professor not found on RMP.');
 
                 // Add popup div to storage_dict
@@ -354,7 +353,7 @@ function get_search(search_url, prof1, campus_initial) {
                 request_open = false;
             } else{ // Take the first professor in search results (accurate since professor name and school matched)
                 var prof_id = prof_list[0].getElementsByTagName('a')[0].getAttribute('href');
-                user_url = page_url+prof_id
+                user_url = page_url + prof_id
                 page_url = proxy_url + user_url;
                 setTimeout( function() {get_prof(page_url, user_url, prof1, campus_initial);}, 1000);
                 console.log('Professor found on RMP.')
@@ -369,22 +368,22 @@ function get_search(search_url, prof1, campus_initial) {
 function get_prof(page_url, user_url, prof1, campus_initial) {
     var prof_request = new XMLHttpRequest();
 	prof_request.onreadystatechange = function(){
-		if (prof_request.readyState == 4) {
-            if (prof_request.status == 200) {
-                // Insert response.text into a div so we can search for elements within
-                var prof_div = document.createElement('div');
-                prof_div.innerHTML = prof_request.responseText;
+		if (prof_request.readyState == 4 && prof_request.status == 200) {
+            // Insert response.text into a div so we can search for elements within
+            var prof_div = document.createElement('div');
+            prof_div.innerHTML = prof_request.responseText;
 
-                // Case where professor has a page but it has no ratings
-                var check_empty = prof_div.getElementsByClassName('headline');
-                if (check_empty.length>0) {
-                    var message = 'It appears ' + prof1 + ' at ' + campus_initial.str + ' has a page within RMP but has no reviews yet. Perhaps they are new at ' + campus_initial.str + ' and have ratings at another school.';
-                    document.getElementById('popup_again').style.textAlign = 'center';
-                    document.getElementById('popup_again').innerText = message;
-                    document.getElementById('popup_title').innerText = 'No Results Found.'
-                    alternate_search(prof1);
-                    console.log('Prof has page on RMP but no ratings');
-                } else { // Professor has a page with ratings
+            // Professor has a page but it has no ratings
+            var check_empty = prof_div.getElementsByClassName('headline');
+            if (check_empty.length>0) {
+                var message = 'It appears ' + prof1 + ' at ' + campus_initial.str + ' has a page within RMP but has no reviews yet. Perhaps they are new at ' + campus_initial.str + ' and have ratings at another school.';
+                document.getElementById('popup_again').style.textAlign = 'center';
+                document.getElementById('popup_again').innerText = message;
+                document.getElementById('popup_title').innerText = 'No Results Found.'
+                alternate_search(prof1, 'No ratings');
+                console.log('Prof has page on RMP but no ratings');
+            } else { // Professor has a page with ratings
+                try {
                     var ratings = prof_div.getElementsByClassName('grade');
                     var num_ratings = prof_div.getElementsByClassName('table-toggle rating-count active');
                     var tag_list = prof_div.getElementsByClassName('tag-box-choosetags');
@@ -426,18 +425,19 @@ function get_prof(page_url, user_url, prof1, campus_initial) {
                     // Add popup div to storage_dict
                     storage_dict[prof1] = document.getElementById('popup_box');
                     console.log(prof1 + ' added to storage.'); 
-                }   
-            } else { // For some reason, error 404 is returned when prof has page but no ratings
-                var message = 'It appears ' + prof1 + ' at ' + campus_initial.str + ' has a page within RMP but has no reviews yet. Perhaps they are new at ' + campus_initial.str + ' and have ratings at another school.';
-                document.getElementById('popup_again').style.textAlign = 'center';
-                document.getElementById('popup_again').innerText = message;
-                document.getElementById('popup_title').innerText = 'No Results Found.'
-                alternate_search(prof1);
-                console.log('Prof has page on RMP but no ratings');
+                }
+                catch { // RMP site might have changed so element class names have changed and data is unable to be scraped
+                    var message = 'Sorry, an error has occurred while gathering data but the professor was found. The development team is currently working on a fix.';
+                    document.getElementById('popup_again').style.textAlign = 'center';
+                    document.getElementById('popup_again').innerText = message;
+                    document.getElementById('popup_title').innerText = 'Data Error Occurred.'
+                    alternate_search(prof1, "Data error", user_url);
+                    console.log('Professor not found on RMP.');
+                }
             }
         }
         // Update boolean variable
-        request_open = false;   
+        request_open = false; 
     }
     prof_request.open("GET", page_url, true);
     prof_request.send();
@@ -445,18 +445,25 @@ function get_prof(page_url, user_url, prof1, campus_initial) {
 
 // Append link to popup_link div with search of only professor name
 // Called when professor has no ratings or a page with no ratings at specific school
-function alternate_search(prof) {
+function alternate_search(prof, status, url) {
     var anchor = document.createElement('a');
     anchor.id = 'anchor_link';
     anchor.target = '_blank';
     anchor.rel = 'noopener noreferrer';
-    var names = prof.split(' ');
-    var first_name = names[1];
-    var last_name = names[2];
-    anchor.href = 'https://www.ratemyprofessors.com/search.jsp?query=' + first_name + '+' + last_name;
     document.getElementById('popup_link').appendChild(anchor);
-    document.getElementById('anchor_link').innerText = 'Search for professor at all schools.';
     document.getElementById('popup_link').style.backgroundColor = 'linear-gradient(rgba(0,0,0,.9), rgba(0,0,0,0.9))';
+
+    if (status == 'No professor' || status == 'No ratings') { // No professor found for specified school or page with no ratings
+        var names = prof.split(' ');
+        var first_name = names[1];
+        var last_name = names[2];
+        anchor.href = 'https://www.ratemyprofessors.com/search.jsp?query=' + first_name + '+' + last_name;
+        document.getElementById('anchor_link').innerText = 'Search for professor at all schools.';
+    } else { // Error occurred displaying information so provide link to teacher page
+        anchor.href = url;
+        document.getElementById('anchor_link').innerText = 'See stats for professor on RMP site.';
+        console.log("WTFFFF");
+    }
 }
 
 // Change the percent bar color according to inputted ratings
