@@ -4,6 +4,8 @@ This is a Chrome extension that allows Claremont College students to easily see 
 
 Check it out on the Chrome Web Store [here.](https://chrome.google.com/webstore/detail/5c-ratemyp/gimpfegdhjdapchojnlagmobkpdllacm?hl=en)
 
+![Example Image](example/rmpExample.png)
+
 ### How was this developed?
 
 The core of this extension lies in the content script. It first injects a button into the course description box whenever the course is clicked on. Upon click of the 5CRateMyP button, information such as the class's professor and campus are gathered and used as a search query.
