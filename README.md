@@ -4,7 +4,7 @@ This is a Chrome extension that allows Claremont College students to easily see 
 
 Check it out on the Chrome Web Store [here.](https://chrome.google.com/webstore/detail/5c-ratemyp/gimpfegdhjdapchojnlagmobkpdllacm?hl=en)
 
-![Example Image](example/rmpExample.png)
+![Example Image](https://github.com/JeremyTsaii/5C-RateMyP/blob/master/example/rmpExample.PNG)
 
 ### How was this developed?
 
