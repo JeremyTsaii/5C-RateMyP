@@ -189,7 +189,7 @@ function get_description() {
     move_loading(bar, 50, 51);
 
     // If PE class, do not get information from RMP
-    if (course_code == 'PE') {
+    if (course_code == 'PE' || course_code == 'DANC') {
         delete_loading();
         document.getElementById('difficulty_graphic').style.textAlign = 'center';
         document.getElementById('difficulty_graphic').innerText = 'This is a P.E. class! No results from RMP.';
@@ -408,8 +408,8 @@ function get_prof(page_url, user_url, prof1, campus_initial) {
                     console.log(ratings_list);
 
                     // Format ratings
-                    var avg_qual = parseFloat(ratings[0].innerText.trim()).toFixed(1);
-                    var overall = 'Overall Rating: ' + avg_qual + '/5.0';
+                    var avg_qual = parseFloat(ratings[0].innerText.trim()).toFixed(2);
+                    var overall = 'Overall Rating: ' + avg_qual + '/5.00';
                     var num = num_ratings[0].innerText.split(' ')[3].substring(3);
                     var tags = 'No tags available.';
                     
@@ -421,7 +421,7 @@ function get_prof(page_url, user_url, prof1, campus_initial) {
 
                     // Loop thorugh all reviews and calculate average difficulty
                     var avg_diff = avgDiff(ratings_list);
-                    var difficulty = 'Average Difficulty: ' + avg_diff + '/5.0';
+                    var difficulty = 'Average Difficulty: ' + avg_diff + '/5.00';
                     
                     // Append link to popup_link div
                     var anchor = document.createElement('a');
@@ -492,7 +492,7 @@ function avgDiff(ratings) {
     for (i = 0; i < ratings.length; i++) {
         sum += parseFloat(ratings[i].innerText);
     }
-    return (sum / ratings.length).toFixed(1); // Round to 1 decimal place
+    return (sum / ratings.length).toFixed(2); // Round to 2 decimal places
 }
 
 // Append link to popup_link div with search of only professor name or professor id
