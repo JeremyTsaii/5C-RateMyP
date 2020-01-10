@@ -189,7 +189,7 @@ function get_description() {
     move_loading(bar, 50, 51);
 
     // If PE class, do not get information from RMP
-    if (course_code == 'PE' || course_code == 'DANC') {
+    if (course_code == 'PE') {
         delete_loading();
         document.getElementById('difficulty_graphic').style.textAlign = 'center';
         document.getElementById('difficulty_graphic').innerText = 'This is a P.E. class! No results from RMP.';
