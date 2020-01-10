@@ -396,9 +396,16 @@ function get_prof(page_url, user_url, prof1, campus_initial) {
             } else { // Professor has a page with ratings
                 try {
                     var ratings = prof_div.getElementsByClassName('RatingValue__Numerator-qw8sqy-2 gxuTRq');
-                    var num_ratings = prof_div.getElementsByClassName('RatingValue__NumRatings-qw8sqy-0 BDziL');
+                    var num_ratings = prof_div.getElementsByClassName('RatingValue__NumRatings-qw8sqy-0 hlolAG');
                     var tag_list = prof_div.getElementsByClassName('TeacherTags__TagsContainer-sc-16vmh1y-0 dbxJaW');
                     var ratings_list = prof_div.getElementsByClassName('RatingValues__RatingValue-sc-6dc747-3 cKZySD');
+
+                    // Easy debugging, most errors occur here
+                    // Look for empty HTML elements (RMP changed html tags)
+                    console.log(ratings);
+                    console.log(num_ratings);
+                    console.log(tag_list);
+                    console.log(ratings_list);
 
                     // Format ratings
                     var avg_qual = parseFloat(ratings[0].innerText.trim()).toFixed(1);
@@ -415,7 +422,7 @@ function get_prof(page_url, user_url, prof1, campus_initial) {
                     // Loop thorugh all reviews and calculate average difficulty
                     var avg_diff = avgDiff(ratings_list);
                     var difficulty = 'Average Difficulty: ' + avg_diff + '/5.0';
-
+                    
                     // Append link to popup_link div
                     var anchor = document.createElement('a');
                     anchor.id = 'anchor_link';
