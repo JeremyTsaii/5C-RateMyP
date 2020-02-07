@@ -396,7 +396,7 @@ function get_prof(page_url, user_url, prof1, campus_initial) {
             } else { // Professor has a page with ratings
                 try {
                     var ratings = prof_div.getElementsByClassName('RatingValue__Numerator-qw8sqy-2 gxuTRq');
-                    var num_ratings = prof_div.getElementsByClassName('RatingValue__NumRatings-qw8sqy-0 hlolAG');
+                    var num_ratings = prof_div.getElementsByClassName('RatingValue__NumRatings-qw8sqy-0 hDaWgM');
                     var tag_list = prof_div.getElementsByClassName('TeacherTags__TagsContainer-sc-16vmh1y-0 dbxJaW');
                     var ratings_list = prof_div.getElementsByClassName('RatingValues__RatingValue-sc-6dc747-3 cKZySD');
 
