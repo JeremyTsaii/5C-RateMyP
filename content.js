@@ -282,6 +282,8 @@ function get_description() {
         // Prof. Benjamin edge case (perhaps more to be added in future)
         if (prof1 == 'Prof. Arthur Benjamin') {
             teacher_name = 'Art+Benjamin';
+        } else if (prof1 == 'Prof. Zach Dodds') { 
+            teacher_name = 'Dodds+Zachary';
         } else {
             teacher_name = names_formatted[0] + '+' + names_formatted[1]; // Search query for teacher name
         }
