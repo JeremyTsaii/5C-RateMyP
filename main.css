@@ -70,36 +70,50 @@
 
 #popup_overall {
     width: 100%;
-    height: 10%;
-    top: 10%;
+    height: 8%;
+    top: 8%;
     text-align: left;
     padding-top: 5px;
 }
 
 #overall_graphic {
     width: 100%;
-    height: 10%;
-    top: 20%;
+    height: 8%;
+    top: 16%;
   }
 
 #popup_difficulty {
     width: 100%;
-    height: 10%;
-    top: 30%;
+    height: 8%;
+    top: 24%;
     text-align: left;
     padding-top: 5px;
   }
 
 #difficulty_graphic {
     width: 100%;
-    height: 10%;
+    height: 8%;
+    top: 32%;
+  }
+
+#popup_again {
+    width: 100%;
+    height: 8%;
     top: 40%;
+    text-align: left;
+    padding-top: 5px;
+  }
+
+#again_graphic {
+    width: 100%;
+    height: 8%;
+    top: 48%;
   }
 
 #popup_tags {
     width: 100%;
-    height: 30%;
-    top: 50%;
+    height: 20%;
+    top: 70%;
     text-align: left;
     padding-top: 10px;
   }
@@ -131,6 +145,15 @@
     text-align: right;
     padding-top: 4px;
     padding-bottom: 2px; 
+    padding-right: 2px;
+    height: 100%;
+  }
+
+#again_bar {
+    color: grey;
+    text-align: right;
+    padding-top: 4px;
+    padding-bottom: 2px;
     padding-right: 2px;
     height: 100%;
   }

@@ -129,6 +129,16 @@ function create_popup(container) {
     difficulty_graphic.className = 'popuptext';
     container.appendChild(difficulty_graphic);
 
+    var popup_again = document.createElement('div');
+    popup_again.id = 'popup_again';
+    popup_again.className = 'popuptext';
+    container.appendChild(popup_again);
+
+    var again_graphic = document.createElement('div');
+    again_graphic.id = 'again_graphic';
+    again_graphic.className = 'popuptext';
+    container.appendChild(again_graphic);
+
     var popup_tags = document.createElement('div');
     popup_tags.id = 'popup_tags';
     popup_tags.className = 'popuptext';
@@ -396,9 +406,10 @@ function get_prof(page_url, user_url, prof1, campus_initial) {
             } else { // Professor has a page with ratings
                 try {
                     var ratings = prof_div.getElementsByClassName('RatingValue__Numerator-qw8sqy-2 gxuTRq');
-                    var num_ratings = prof_div.getElementsByClassName('RatingValue__NumRatings-qw8sqy-0 hDaWgM');
+                    var num_ratings = prof_div.getElementsByClassName('RatingValue__NumRatings-qw8sqy-0 jvzMox');
                     var tag_list = prof_div.getElementsByClassName('TeacherTags__TagsContainer-sc-16vmh1y-0 dbxJaW');
                     var ratings_list = prof_div.getElementsByClassName('RatingValues__RatingValue-sc-6dc747-3 cKZySD');
+                    var target = prof_div.getElementsByClassName('FeedbackItem__FeedbackNumber-uof32n-1 bGrrmf');
 
                     // Easy debugging, most errors occur here
                     // Look for empty HTML elements (RMP changed html tags)
@@ -406,22 +417,29 @@ function get_prof(page_url, user_url, prof1, campus_initial) {
                     console.log(num_ratings);
                     console.log(tag_list);
                     console.log(ratings_list);
+                    console.log(target);
 
                     // Format ratings
-                    var avg_qual = parseFloat(ratings[0].innerText.trim()).toFixed(2);
-                    var overall = 'Overall Rating: ' + avg_qual + '/5.00';
+                    var avg_qual = parseFloat(ratings[0].innerText.trim()).toFixed(1);
+                    var overall = 'Overall Rating: ' + avg_qual + '/5.0';
+                    var avg_diff = parseFloat(target[1].innerText.trim()).toFixed(1);
+                    var difficulty = 'Level of Difficulty: ' + avg_diff + '/5.0';
+                    var avg_again = target[0].innerText.trim();
+                    var again = 'Take-Again Percentage: ' + avg_again;
+                    avg_again = avg_again.substring(0, avg_again.length - 1);
                     var num = num_ratings[0].innerText.split(' ')[3].substring(3);
                     var tags = 'No tags available.';
-                    
+
                     // Gather top tags
                     var tagList = parseTags(tag_list[0].innerText);
                     if (tagList.length != 0) { // Top tag exists
                         tags = 'Top Tags: ' + tagList;
                     }
 
+                    
+
                     // Loop thorugh all reviews and calculate average difficulty
-                    var avg_diff = avgDiff(ratings_list);
-                    var difficulty = 'Average Difficulty: ' + avg_diff + '/5.00';
+                    // var avg_diff = avgDiff(ratings_list);
                     
                     // Append link to popup_link div
                     var anchor = document.createElement('a');
@@ -435,6 +453,7 @@ function get_prof(page_url, user_url, prof1, campus_initial) {
                     document.getElementById('popup_title').innerText = prof1 + ':';
                     document.getElementById('popup_overall').innerText = overall;
                     document.getElementById('popup_difficulty').innerText = difficulty;
+                    document.getElementById('popup_again').innerText = again;
                     document.getElementById('popup_tags').style.textAlign = 'left';
                     document.getElementById('popup_tags').innerText = tags;
                     document.getElementById('popup_num').innerText = 'Total Student Reviews: ' + num;
@@ -444,7 +463,7 @@ function get_prof(page_url, user_url, prof1, campus_initial) {
                     change_backgrounds();
         
                     // Change the percent bar color according to inputted ratings
-                    update_graphics(avg_qual, avg_diff);
+                    update_graphics(avg_qual, avg_diff, avg_again);
         
                     // Add popup div to storage_dict
                     storage_dict[prof1] = document.getElementById('popup_box');
@@ -492,7 +511,7 @@ function avgDiff(ratings) {
     for (i = 0; i < ratings.length; i++) {
         sum += parseFloat(ratings[i].innerText);
     }
-    return (sum / ratings.length).toFixed(2); // Round to 2 decimal places
+    return (sum / ratings.length).toFixed(1);
 }
 
 // Append link to popup_link div with search of only professor name or professor id
@@ -522,7 +541,7 @@ function alternate_search(prof, status, url) {
 }
 
 // Change the percent bar color according to inputted ratings
-function update_graphics(overall, difficulty) {
+function update_graphics(overall, difficulty, again) {
     var overall_bar = document.createElement('div');
     var overall_percent = String(parseFloat(overall)/5 * 100) + '%';
     overall_bar.id = 'overall_bar';
@@ -538,6 +557,14 @@ function update_graphics(overall, difficulty) {
     difficulty_bar.style.width = difficulty_percent;
     color(difficulty_bar, 'inverse');
     document.getElementById('difficulty_graphic').appendChild(difficulty_bar);
+
+    var again_bar = document.createElement('div');
+    var again_percent = String(parseFloat(again)) + '%';
+    again_bar.id = 'again_bar';
+    again_bar.innerText = again;
+    again_bar.style.width = again_percent;
+    color(again_bar, 'normal');
+    document.getElementById('again_graphic').appendChild(again_bar);
 }
 
 // Changes color of bar to green/yellow/orange/red according to the percentage
@@ -572,6 +599,7 @@ function change_backgrounds() {
     document.getElementById('popup_link').style.backgroundColor = 'linear-gradient(rgba(0,0,0,.9), rgba(0,0,0,0.9))';
     document.getElementById('overall_graphic').style.backgroundColor = '#ddd';
     document.getElementById('difficulty_graphic').style.backgroundColor = '#ddd';
+    document.getElementById('again_graphic').style.backgroundColor = '#ddd';
 }
 
 // Opens profesor ratings box
