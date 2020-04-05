@@ -262,13 +262,13 @@ function get_description() {
 
     // If prof_name already within storage_dict, take from storage dictionary and override current popup
     console.log('Checking storage for ' + prof1 + '.');
-    if (prof1 in storage_dict) {
+    if (prof1 + campus_initial.str in storage_dict) {
         // Remove current popup
         var old_child = document.getElementById('popup_box');
         old_child.parentNode.removeChild(old_child);
 
         // Append retrieved popup into correct position
-        var new_child = storage_dict[prof1];
+        var new_child = storage_dict[prof1 + campus_initial.str];
         new_child.className = 'popup show';
         var anchor = document.getElementById('rmp-button').nextSibling.nextSibling; // Reference point for insertion
         anchor.parentNode.insertBefore(new_child, anchor);
@@ -354,7 +354,7 @@ function get_search(search_url, prof1, campus_initial) {
                     console.log('Professor not found on RMP.');
 
                     // Add popup div to storage_dict
-                    storage_dict[prof1] = document.getElementById('popup_box');
+                    storage_dict[prof1 + campus_initial.str] = document.getElementById('popup_box');
                     console.log(prof1 + ' added to storage.');
 
                     // Update boolean variable
@@ -418,26 +418,36 @@ function get_prof(page_url, user_url, prof1, campus_initial) {
                     console.log(tag_list);
                     console.log(ratings_list);
                     console.log(target);
+                    
+                    // Check to make sure take-again percentage exists
+                    var avg_diff = '';
+                    var avg_again = '';
+                    var again = 'Take-Again Percentage: N/A';
+
+                    if (target.length == 2) { // Normal case
+                        avg_diff = parseFloat(target[1].innerText.trim()).toFixed(1);
+                        avg_again = target[0].innerText.trim();
+                        again = 'Take-Again Percentage: ' + avg_again;
+                        avg_again = avg_again.substring(0, avg_again.length - 1);
+                    } else { // Take-again percentage missing
+                        avg_diff = parseFloat(target[0].innerText.trim()).toFixed(1);
+                    }
 
                     // Format ratings
                     var avg_qual = parseFloat(ratings[0].innerText.trim()).toFixed(1);
                     var overall = 'Overall Rating: ' + avg_qual + '/5.0';
-                    var avg_diff = parseFloat(target[1].innerText.trim()).toFixed(1);
                     var difficulty = 'Level of Difficulty: ' + avg_diff + '/5.0';
-                    var avg_again = target[0].innerText.trim();
-                    var again = 'Take-Again Percentage: ' + avg_again;
-                    avg_again = avg_again.substring(0, avg_again.length - 1);
                     var num = num_ratings[0].innerText.split(' ')[3].substring(3);
                     var tags = 'No tags available.';
-
+                   
                     // Gather top tags
-                    var tagList = parseTags(tag_list[0].innerText);
-                    if (tagList.length != 0) { // Top tag exists
-                        tags = 'Top Tags: ' + tagList;
+                    if (tag_list.length != 0) {
+                        tagList = parseTags(tag_list[0].innerText);
+                        if (tagList.length != 0) { // Top tag exists
+                            tags = 'Top Tags: ' + tagList;
+                        }
                     }
-
                     
-
                     // Loop thorugh all reviews and calculate average difficulty
                     // var avg_diff = avgDiff(ratings_list);
                     
@@ -466,7 +476,7 @@ function get_prof(page_url, user_url, prof1, campus_initial) {
                     update_graphics(avg_qual, avg_diff, avg_again);
         
                     // Add popup div to storage_dict
-                    storage_dict[prof1] = document.getElementById('popup_box');
+                    storage_dict[prof1 + campus_initial.str] = document.getElementById('popup_box');
                     console.log(prof1 + ' added to storage.'); 
                 }
                 catch { // RMP site might have changed so element class names have changed and data is unable to be scraped
@@ -558,6 +568,7 @@ function update_graphics(overall, difficulty, again) {
     color(difficulty_bar, 'inverse');
     document.getElementById('difficulty_graphic').appendChild(difficulty_bar);
 
+    if (again != '') { // Take-again percentage exists
     var again_bar = document.createElement('div');
     var again_percent = String(parseFloat(again)) + '%';
     again_bar.id = 'again_bar';
@@ -565,6 +576,7 @@ function update_graphics(overall, difficulty, again) {
     again_bar.style.width = again_percent;
     color(again_bar, 'normal');
     document.getElementById('again_graphic').appendChild(again_bar);
+    }
 }
 
 // Changes color of bar to green/yellow/orange/red according to the percentage
